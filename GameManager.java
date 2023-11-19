@@ -228,52 +228,6 @@ public class GameManager
 		animationPane.paint();
 	}
 
-	// public void addObstacle(int obstacle_width, int obstacle_height) throws IOException
-	// {
-	// 	this.obstacle = new Obstacle(1280, 550, obstacle_width, obstacle_height);
-
-	// 	this.obstacle.img = ImageIO.read(new File(Game.obstacleSprite));
-
-	// 	ImageFilter filter = new RGBImageFilter() {
-	// 		int transparentColor = 0xFF000000;
-
-	// 		public final int filterRGB(int x, int y, int rgb)
-	// 		{
-	// 			if (rgb == 0xffeeeeee || rgb == 0xffffffff || rgb == 0xffededed)
-	// 			{
-	// 				rgb = rgb & 0x00FFFFFF;
-	// 				return rgb;
-	// 			}
-	// 			if ((rgb | 0xFF000000) == transparentColor)
-	// 			{
-	// 			  return 0x00FFFFFF & rgb;
-	// 		   	}
-	// 			else
-	// 			{
-	// 			  return rgb;
-	// 		   	}
-	// 		}
-	// 	};
-
-	// 	Image img = this.obstacle.img.getScaledInstance(obstacle_width, obstacle_height, Image.SCALE_SMOOTH);
-	// 	img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-	// 	Image tmp = img.getScaledInstance(this.obstacle.width, this.obstacle.height, Image.SCALE_SMOOTH);
-		
-	// 	ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
-	// 	Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
-		
-	// 	BufferedImage dimg = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-	// 	tmp = transparentImg;
-
-	// 	Graphics2D g2d = dimg.createGraphics();
-	// 	g2d.drawImage(tmp, 0, 0, null);
-	// 	g2d.dispose();
-
-	// 	this.obstacle.img = dimg;
-
-	// 	objects.add(this.obstacle);
-	// }
-
 	public Background getBackground()
 	{
 		return this.background;
