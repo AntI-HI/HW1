@@ -32,7 +32,7 @@ public class InstanceSpawner implements Runnable
     {
         if (object_type == ObjectTypes.OBSTACLE)
         {
-            handler.addObstacle(Game.obstacle_width, Game.obstacle_height);
+            handler.AddObject(1280, 550, object_type);
         }            
     }
 
@@ -43,7 +43,7 @@ public class InstanceSpawner implements Runnable
 
         while(true)
         {
-            Thread.sleep(Math.abs(r.nextLong() % 1)); // wait a random time up to 1 second
+            Thread.sleep(Math.abs(r.nextLong() % 1000)); // wait a random time up to 1 second
             
             if (dataPool.getSpeed() > 0)
             {

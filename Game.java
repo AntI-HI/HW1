@@ -19,17 +19,9 @@ public class Game extends JFrame implements KeyListener, Runnable
 	protected static Game 		 	game;
 	protected static GameManager 	handler;
 	// protected static AnimationPane 	animationPane;
-	protected static final String playerSprite 	  = "player_sprite.png";
-	public 	  static final String background_img  = "background3.gif";
+	public    static final String playerSprite 	  = "player_sprite.png";
 	public 	  static final String obstacleSprite  = "obstacle.jpeg";
-
-	public static int player_posX	= 240;
-	public static int player_posY	= 550;
-	public static int player_width	= 50;
-	public static int player_height	= 80;
-
-	public static int obstacle_width  = 50;
-	public static int obstacle_height = 50;
+	public 	  static final String background_img  = "background3.gif";
 
 	public static int background_width  = 1280;
 	public static int background_height = 720;
@@ -59,8 +51,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 	{
 		try
 		{
-			handler = new GameManager(player_posX, player_posY, player_width, player_height, playerSprite);
-			// handler.addObstacleSprite(obstacleSprite, obstacle_width, obstacle_height);
+			handler = new GameManager();
 			handler.Start();
 		}
 		catch (IOException e)

@@ -25,6 +25,7 @@ public abstract class GameObject /* extends JPanel */
 	{
 		setStart(_xPos, _yPos, _width, _height);
 		setVelocity(1f, 0f);
+		img = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
 
 		hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
 	}

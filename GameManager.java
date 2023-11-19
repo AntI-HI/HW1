@@ -21,33 +21,34 @@ public class GameManager
 	protected boolean up = false, down = false, right = false, left = false;
 	protected final static double GRAVITY = 1f;
 
+	public static int player_posX	= 240;
+	public static int player_posY	= 550;
+	public static int player_width	= 50;
+	public static int player_height	= 80;
+
+	public static int obstacle_width  = 100;
+	public static int obstacle_height = 100;
+
 	private   Player 		  player;
 	private   Obstacle        obstacle;
 	private   Background 	  background;
 	private	  AnimationPane   animationPane;
 	private	  PhysicsManager  physicsManager;
-	public   InstanceSpawner instanceSpawner;
+	public    InstanceSpawner instanceSpawner;
 	
-    public GameManager(int init_player_posX, int init_player_posY,
-						int width, int height, String sprite) throws IOException
-						{
-							
+    public GameManager() throws IOException
+	{
 		DataPool.CreateDataPool();
 
-		this.animationPane   = new AnimationPane(this);
-		this.physicsManager  = PhysicsManager.CreatePhysicsManagerInstance();
-		this.player 	     = Player.createPlayerInstance(init_player_posX, init_player_posY, width, height);
-		this.background      = new Background();
+		this.animationPane  = new AnimationPane(this);
+		this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance();
+		this.background     = new Background();
 
-		try
-		{
-			addBackgroundSprite(Game.background_img, Game.background_width, Game.background_height);
-			addPlayerSprite(sprite, width, height);
-		}
-		catch (IOException ex)
-		{
-			ex.printStackTrace();
-		}
+		addPlayerSprite(Game.playerSprite, player_width, player_height, true);
+		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
+		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
+
+		addBackgroundSprite(Game.background_img, Game.background_width, Game.background_height);
     }
 
 	private void addBackgroundSprite(String backgroundImg, int background_width, int background_height)
@@ -78,11 +79,66 @@ public class GameManager
 		graphics.dispose();
 	}
 
-	public void addPlayerSprite(String player_sprite, int player_width, int player_height) throws IOException
+	public void addPlayerSprite(String sprite,
+	 					int width,
+	 					int height,
+						boolean requires_filter) throws IOException
 	{
-		this.player.img = ImageIO.read(new File(player_sprite));
+		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-		ImageFilter filter = new RGBImageFilter() {
+		if (requires_filter)
+		{
+			ImageFilter   filter 		  = filterTransparentForPlayer();
+			ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+			Image 		  transparentImg  = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+			img	= transparentImg;
+		}
+
+		DataPool.getInstance().setPlayerSprite(img);
+	}
+
+	public void AddObject(int posX, int posY, ObjectTypes type)
+	{
+		DataPool dataPool   = DataPool.getInstance();
+		Image img;
+		GameObject obj;
+
+		if (type == ObjectTypes.PLAYER)
+		{
+			img = dataPool.getPlayerSprite();
+			int width  = img.getWidth(null);
+			int height = img.getHeight(null);
+			this.player = Player.createPlayerInstance(posX, posY, width, height);
+			obj = this.player;
+		}
+		else
+		{
+			img = dataPool.getObstacleSprite();
+			int width  = img.getWidth(null);
+			int height = img.getHeight(null);
+			this.obstacle = new Obstacle(posX, posY, width, height);
+			obj = this.obstacle;
+		}
+		
+		objects.add(obj);
+	}
+
+	// private void addPlayer(int posX, int posY)
+	// {
+	// 	DataPool dataPool   = DataPool.getInstance();
+	// 	Image    player_img	= dataPool.getPlayerSprite();
+
+	// 	int width  = player_img.getWidth(null);
+	// 	int height = player_img.getHeight(null);
+
+	// 	this.player = Player.createPlayerInstance(posX, posY, width, height);
+	// 	objects.add(this.player);
+	// }
+
+	private ImageFilter filterTransparentForPlayer()
+	{
+		ImageFilter filter = new RGBImageFilter()
+		{
 			int transparentColor = 0xFF000000;
 
 			public final int filterRGB(int x, int y, int rgb)
@@ -102,30 +158,31 @@ public class GameManager
 				}
 			}
 		};
-
-		BufferedImage img = this.player.img;
-		Image tmp = img.getScaledInstance(this.player.width, this.player.height, Image.SCALE_SMOOTH);
-
-		ImageProducer filteredImgProd = new FilteredImageSource((tmp).getSource(), filter);
-		Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
-
-		BufferedImage dimg = new BufferedImage(this.player.width, this.player.height, BufferedImage.TYPE_INT_ARGB);
-
-		animationPane.setGraphics2d(dimg.createGraphics());
-		animationPane.getGraphics2d().drawImage(transparentImg, 0, 0, null);
-		animationPane.getGraphics2d().dispose();
-
-		this.player.img = dimg;
-		objects.add(this.player);
+		return filter;
 	}
 
-	public void addObstacleSprite(String obstacle_sprite, int obstacle_width, int obstacle_height) throws IOException
+	public void addObstacleSprite(String sprite,
+								int width,
+								int height,
+								boolean requires_filter) throws IOException
 	{
-		this.obstacle = new Obstacle(600, 520, obstacle_width, obstacle_height);
+		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-		this.obstacle.img = ImageIO.read(new File(obstacle_sprite));
+		if (requires_filter)
+		{
+			ImageFilter   filter 		  = filterTransparentForObstacle();
+			ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+			Image 		  transparentImg  = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+			img	= transparentImg;
+		}
 
-		ImageFilter filter = new RGBImageFilter() {
+		DataPool.getInstance().setObstacleSprite(img);
+	}
+
+	private ImageFilter filterTransparentForObstacle()
+	{
+		ImageFilter filter = new RGBImageFilter() 
+		{
 			int transparentColor = 0xFF000000;
 
 			public final int filterRGB(int x, int y, int rgb)
@@ -137,39 +194,22 @@ public class GameManager
 				}
 				if ((rgb | 0xFF000000) == transparentColor)
 				{
-				  return 0x00FFFFFF & rgb;
-			   	}
+					return 0x00FFFFFF & rgb;
+				}
 				else
 				{
-				  return rgb;
-			   	}
+					return rgb;
+				}
 			}
 		};
 
-		Image img = this.obstacle.img.getScaledInstance(obstacle_width, obstacle_height, Image.SCALE_SMOOTH);
-		img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-		Image tmp = img.getScaledInstance(this.obstacle.width, this.obstacle.height, Image.SCALE_SMOOTH);
-		
-		ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
-		Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
-		
-		BufferedImage dimg = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-		tmp = transparentImg;
-
-		Graphics2D g2d = dimg.createGraphics();
-		g2d.drawImage(tmp, 0, 0, null);
-		g2d.dispose();
-
-		this.obstacle.img = dimg;
-
-		objects.add(this.obstacle);
+		return filter;
 	}
 
 	public void Start()
 	{
 		this.instanceSpawner = new InstanceSpawner(ObjectTypes.OBSTACLE, this);
-		// this.instanceSpawner.RandomInitializer();
-		Thread t1 =new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
+		Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
 		t1.start();
 	}
 
@@ -188,51 +228,51 @@ public class GameManager
 		animationPane.paint();
 	}
 
-	public void addObstacle(int obstacle_width, int obstacle_height) throws IOException
-	{
-		this.obstacle = new Obstacle(1280, 550, obstacle_width, obstacle_height);
+	// public void addObstacle(int obstacle_width, int obstacle_height) throws IOException
+	// {
+	// 	this.obstacle = new Obstacle(1280, 550, obstacle_width, obstacle_height);
 
-		this.obstacle.img = ImageIO.read(new File(Game.obstacleSprite));
+	// 	this.obstacle.img = ImageIO.read(new File(Game.obstacleSprite));
 
-		ImageFilter filter = new RGBImageFilter() {
-			int transparentColor = 0xFF000000;
+	// 	ImageFilter filter = new RGBImageFilter() {
+	// 		int transparentColor = 0xFF000000;
 
-			public final int filterRGB(int x, int y, int rgb)
-			{
-				if (rgb == 0xffeeeeee || rgb == 0xffffffff || rgb == 0xffededed)
-				{
-					rgb = rgb & 0x00FFFFFF;
-					return rgb;
-				}
-				if ((rgb | 0xFF000000) == transparentColor)
-				{
-				  return 0x00FFFFFF & rgb;
-			   	}
-				else
-				{
-				  return rgb;
-			   	}
-			}
-		};
+	// 		public final int filterRGB(int x, int y, int rgb)
+	// 		{
+	// 			if (rgb == 0xffeeeeee || rgb == 0xffffffff || rgb == 0xffededed)
+	// 			{
+	// 				rgb = rgb & 0x00FFFFFF;
+	// 				return rgb;
+	// 			}
+	// 			if ((rgb | 0xFF000000) == transparentColor)
+	// 			{
+	// 			  return 0x00FFFFFF & rgb;
+	// 		   	}
+	// 			else
+	// 			{
+	// 			  return rgb;
+	// 		   	}
+	// 		}
+	// 	};
 
-		Image img = this.obstacle.img.getScaledInstance(obstacle_width, obstacle_height, Image.SCALE_SMOOTH);
-		img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-		Image tmp = img.getScaledInstance(this.obstacle.width, this.obstacle.height, Image.SCALE_SMOOTH);
+	// 	Image img = this.obstacle.img.getScaledInstance(obstacle_width, obstacle_height, Image.SCALE_SMOOTH);
+	// 	img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+	// 	Image tmp = img.getScaledInstance(this.obstacle.width, this.obstacle.height, Image.SCALE_SMOOTH);
 		
-		ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
-		Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+	// 	ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+	// 	Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
 		
-		BufferedImage dimg = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-		tmp = transparentImg;
+	// 	BufferedImage dimg = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+	// 	tmp = transparentImg;
 
-		Graphics2D g2d = dimg.createGraphics();
-		g2d.drawImage(tmp, 0, 0, null);
-		g2d.dispose();
+	// 	Graphics2D g2d = dimg.createGraphics();
+	// 	g2d.drawImage(tmp, 0, 0, null);
+	// 	g2d.dispose();
 
-		this.obstacle.img = dimg;
+	// 	this.obstacle.img = dimg;
 
-		objects.add(this.obstacle);
-	}
+	// 	objects.add(this.obstacle);
+	// }
 
 	public Background getBackground()
 	{

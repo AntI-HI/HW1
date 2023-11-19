@@ -46,7 +46,7 @@ public class HighJump implements JumpStrategy
                 player.set_is_descending(true);
             }
 
-            if (player.yPos >= Game.player_posY)
+            if (player.yPos >= GameManager.player_posY)
             {
                 player.set_is_jumping(false);
                 player.set_is_ascending(false);
