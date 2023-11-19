@@ -123,18 +123,6 @@ public class GameManager
 		objects.add(obj);
 	}
 
-	// private void addPlayer(int posX, int posY)
-	// {
-	// 	DataPool dataPool   = DataPool.getInstance();
-	// 	Image    player_img	= dataPool.getPlayerSprite();
-
-	// 	int width  = player_img.getWidth(null);
-	// 	int height = player_img.getHeight(null);
-
-	// 	this.player = Player.createPlayerInstance(posX, posY, width, height);
-	// 	objects.add(this.player);
-	// }
-
 	private ImageFilter filterTransparentForPlayer()
 	{
 		ImageFilter filter = new RGBImageFilter()
