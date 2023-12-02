@@ -32,13 +32,17 @@ public class GameManager
 	private   Player 		  player;
 	private   Obstacle        obstacle;
 	private   Background 	  background;
+	private   ScoreManager    scoreManager;
 	private	  AnimationPane   animationPane;
 	private	  PhysicsManager  physicsManager;
 	public    InstanceSpawner instanceSpawner;
+
+	private int current_obstacle_idx = 1;
 	
     public GameManager() throws IOException
 	{
 		DataPool.CreateDataPool();
+		scoreManager = ScoreManager.CreateScoreManager();
 
 		this.animationPane  = new AnimationPane(this);
 		this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance();
@@ -47,8 +51,7 @@ public class GameManager
 		addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
 		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
-
-		addBackgroundSprite(Game.background_img, Game.background_width, Game.background_height);
+		addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
     }
 
 	private void addBackgroundSprite(String backgroundImg, int background_width, int background_height)
@@ -80,9 +83,9 @@ public class GameManager
 	}
 
 	public void addPlayerSprite(String sprite,
-	 					int width,
-	 					int height,
-						boolean requires_filter) throws IOException
+								int width,
+								int height,
+								boolean requires_filter) throws IOException
 	{
 		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
@@ -110,6 +113,7 @@ public class GameManager
 			int height = img.getHeight(null);
 			this.player = Player.createPlayerInstance(posX, posY, width, height);
 			obj = this.player;
+			scoreManager.setPlayer(player);
 		}
 		else
 		{
@@ -118,6 +122,7 @@ public class GameManager
 			int height = img.getHeight(null);
 			this.obstacle = new Obstacle(posX, posY, width, height);
 			obj = this.obstacle;
+			scoreManager.pause = false;	// Unpause the score calculation utility if it is paused before.
 		}
 		
 		objects.add(obj);
@@ -209,6 +214,40 @@ public class GameManager
 		}
 		background.Update();
 		physicsManager.CollisionCheck(player, objects);
+		UpdateScore();
+	}
+
+	private void UpdateScore()
+	{
+		// Make sure there is the next obstacle in the objects container
+		if (!scoreManager.pause)
+		{
+			// Acknowledge the current obstacle as the target score trigger.
+			scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
+
+			// Perform Score action if certain conditions are performed.
+			boolean performed = scoreManager.PerformScore();
+	
+			if (performed)
+			{
+				// if the score is achieved and the current obstacle is not last game object on the list
+				// get the next obstacle.
+				if (current_obstacle_idx < objects.size() - 1)
+				{
+					scoreManager.pause = false;
+					current_obstacle_idx += 1;
+				}
+				else	// Wait for the new obstacle object to be spawned.
+				{
+					// During pause state, update the index only one time to prepare for next calculations.
+					if (!scoreManager.pause)
+					{
+						current_obstacle_idx += 1;
+					}
+					scoreManager.pause = true;	// Wait until new obstacle object spawns.
+				}
+			}
+		}
 	}
 	
 	public void draw()

@@ -44,7 +44,6 @@ public class InstanceSpawner implements Runnable
         while(true)
         {
             Thread.sleep(Math.abs(r.nextLong() % 1000)); // wait a random time up to 1 second
-            
             if (dataPool.getSpeed() > 0)
             {
                 InstantiateObject();

@@ -4,7 +4,6 @@ public class HighJump implements JumpStrategy
 
     public HighJump()
     {
-        // player = Player.getPlayerInstance();
     }
 
     @Override

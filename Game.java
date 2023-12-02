@@ -18,23 +18,23 @@ public class Game extends JFrame implements KeyListener, Runnable
 
 	protected static Game 		 	game;
 	protected static GameManager 	handler;
-	// protected static AnimationPane 	animationPane;
-	public    static final String playerSprite 	  = "player_sprite.png";
-	public 	  static final String obstacleSprite  = "obstacle.jpeg";
-	public 	  static final String background_img  = "background3.gif";
 
-	public static int background_width  = 1280;
-	public static int background_height = 720;
+	public static final String playerSprite   = "player_sprite.png";
+	public static final String obstacleSprite = "obstacle.jpeg";
+	public static final String background_img = "background3.gif";
 
-	private static Game frame			= null;
-	private static int  instance_count	= 0;
+	public static final int window_width  = 1280;
+	public static final int window_height = 720;
+
+	private static Game frame		   = null;
+	private static int  instance_count = 0;
 
 	public static double delta = 0;
 	
 	public static void main(String args[])
     {
-		Create_Singleton_Instance();
-		Create_Game_Handler();
+		Create_Game_Instance();
+		Create_Game_Manager();
 		Set_Up_Frame();
 
 		game.Start();
@@ -47,7 +47,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 		thread.start();
 	}
 
-	private static void Create_Game_Handler()
+	private static void Create_Game_Manager()
 	{
 		try
 		{
@@ -68,14 +68,14 @@ public class Game extends JFrame implements KeyListener, Runnable
 			frame.setLayout(new BorderLayout());
 
 			frame.add(handler.getAnimationPane());
-			frame.setPreferredSize(new Dimension(background_width, background_height));
+			frame.setPreferredSize(new Dimension(window_width, window_height));
 			frame.pack();
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
 		}
 	}
 
-	private static Game Create_Singleton_Instance()
+	private static Game Create_Game_Instance()
 	{
 		if (instance_count == 0)
 		{
