@@ -4,6 +4,11 @@ public class PhysicsManager
 {
     private static PhysicsManager instance = null;
 
+    // private long current_time;
+    // private long last_update_time;
+
+    public boolean pause = true;
+
     public static PhysicsManager CreatePhysicsManagerInstance()
     {
         if (instance == null)
@@ -18,22 +23,42 @@ public class PhysicsManager
         return instance;
     }
 
-    private PhysicsManager() {}
+    // TODO: This dead code will be removed.
+    // public void CollisionCheck(GameObject source, LinkedList<GameObject> objects)
+    // {
+    //     boolean is_collide = false;
 
+    //     current_time = System.currentTimeMillis();
+    //     if (current_time - last_update_time > 1000)
+    //     {
+    //         for(int i = 1; i < objects.size(); i++)
+    //         {
+    //             GameObject tempObject = objects.get(i);
+    //             if(source.getBounds().intersects(tempObject.hitbox)) 
+    //             {
+    //                 last_update_time = System.currentTimeMillis();
+    //                 is_collide = true;
+    //                 System.out.println("Collision Happened");
+    //                 break;
+    //             }
+    //         }
+    //         source.set_event(is_collide);
+    //     }
+    // }
 
-    public void CollisionCheck(GameObject source, LinkedList<GameObject> objects)
+    public boolean isCollide(GameObject source, GameObject target)
     {
         boolean is_collide = false;
 
-        for(int i = 1; i < objects.size(); i++)
-		{
-			GameObject tempObject = objects.get(i);
-			if(source.getBounds().intersects(tempObject.hitbox)) 
-			{
-                is_collide = true;
-				break;
-			}
-		}
-		source.set_event(is_collide);
+        if(source.getBounds().intersects(target.hitbox)) 
+        {
+            is_collide = true;
+            target.collides = true;
+            System.out.println("Collision Happened");
+        }
+        // TODO: Think about using event management properly. Maybe creating a new class named Event Manager.
+        source.set_event(is_collide);   
+
+        return is_collide;
     }
 }

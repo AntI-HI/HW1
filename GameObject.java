@@ -19,7 +19,7 @@ public abstract class GameObject /* extends JPanel */
 	protected Rectangle top = new Rectangle(), bottom = new Rectangle(), right = new Rectangle(), left = new Rectangle();
 	protected DataPool dataPool;
 
-	protected boolean	collides = false;
+	protected boolean collides = false;
 
 	public GameObject(int _xPos, int _yPos, int _width, int _height)
 	{
@@ -90,6 +90,11 @@ public abstract class GameObject /* extends JPanel */
 	
 	public abstract void update();
 	
+	
+	/* TODO: Try to perform drawing procedures for individual Game Object inside the Game Object class methods 
+	and seperate the drawing process for AnimationPane. */
+	
+
 	// public abstract void draw();
 
 	// @Override

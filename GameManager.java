@@ -38,6 +38,7 @@ public class GameManager
 	public    InstanceSpawner instanceSpawner;
 
 	private int current_obstacle_idx = 1;
+	private boolean new_spawned	= false;
 	
     public GameManager() throws IOException
 	{
@@ -122,7 +123,13 @@ public class GameManager
 			int height = img.getHeight(null);
 			this.obstacle = new Obstacle(posX, posY, width, height);
 			obj = this.obstacle;
-			scoreManager.pause = false;	// Unpause the score calculation utility if it is paused before.
+			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
+			if (objects.size() == 1)
+			{
+				scoreManager.pause = false;	  // Unpause the score calculation utility for the first obstacle spawn.
+				physicsManager.pause = false; // Unpause the physics calculation utility for the first obstacle spawn.
+		
+			}
 		}
 		
 		objects.add(obj);
@@ -213,12 +220,57 @@ public class GameManager
 			objects.get(i).update();
 		}
 		background.Update();
-		physicsManager.CollisionCheck(player, objects);
-		UpdateScore();
+
+		// TODO: Encapsulate those procedures to something like state manager.
+		boolean collides = CollisionCheck();
+		if (!collides)
+		{
+			UpdateScore();
+		}
+		object_selector();
 	}
 
-	private void UpdateScore()
+	private void object_selector()
 	{
+		if (objects.size() > 1)
+		{
+			GameObject obstacle = objects.get(current_obstacle_idx);
+			if (player.xPos > obstacle.xPos + obstacle.width && new_spawned)
+			{
+				if ((current_obstacle_idx < objects.size() - 1))
+				{
+					current_obstacle_idx++;
+					scoreManager.pause = false;
+					physicsManager.pause = false;
+				}
+				else
+				{
+					scoreManager.pause = true;
+					physicsManager.pause = true;
+					new_spawned = false;
+				}
+			}
+		}
+	}
+
+	private boolean CollisionCheck()
+	{
+		boolean collides = false;
+		if (!physicsManager.pause)
+		{
+			collides = physicsManager.isCollide(player, objects.get(current_obstacle_idx));
+			
+			if(collides)
+			{
+				physicsManager.pause = true; // Collision check only occurs once for every obstacle
+			}
+		}
+		return collides;
+	}
+
+	private boolean UpdateScore()
+	{
+		boolean performed = false;
 		// Make sure there is the next obstacle in the objects container
 		if (!scoreManager.pause)
 		{
@@ -226,28 +278,33 @@ public class GameManager
 			scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
 
 			// Perform Score action if certain conditions are performed.
-			boolean performed = scoreManager.PerformScore();
-	
+			performed = scoreManager.PerformScore();
 			if (performed)
 			{
-				// if the score is achieved and the current obstacle is not last game object on the list
-				// get the next obstacle.
-				if (current_obstacle_idx < objects.size() - 1)
-				{
-					scoreManager.pause = false;
-					current_obstacle_idx += 1;
-				}
-				else	// Wait for the new obstacle object to be spawned.
-				{
-					// During pause state, update the index only one time to prepare for next calculations.
-					if (!scoreManager.pause)
-					{
-						current_obstacle_idx += 1;
-					}
-					scoreManager.pause = true;	// Wait until new obstacle object spawns.
-				}
+				scoreManager.pause = true;	// Wait until new obstacle object spawns.
 			}
+			// if (performed)
+			// {
+			// 	// if the score is achieved and the current obstacle is not last game object on the list
+			// 	// get the next obstacle.
+			// 	if (current_obstacle_idx < objects.size() - 1)
+			// 	{
+			// 		scoreManager.pause = false;
+			// 		current_obstacle_idx += 1;
+			// 		physicsManager.pause = false;
+			// 	}
+			// 	else	// Wait for the new obstacle object to be spawned.
+			// 	{
+			// 		// During pause state, update the index only one time to prepare for next calculations.
+			// 		if (!scoreManager.pause)
+			// 		{
+			// 			current_obstacle_idx += 1;
+			// 		}
+			// 		scoreManager.pause = true;	// Wait until new obstacle object spawns.
+			// 	}
+			// }
 		}
+		return performed;
 	}
 	
 	public void draw()

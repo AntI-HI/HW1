@@ -64,7 +64,7 @@ public class ScoreManager
 
     public boolean PerformScore()
     {
-        if (player.xPos > obstacle.xPos)
+        if (!obstacle.collides && player.xPos > obstacle.xPos + obstacle.width)
         {
             current_score = current_score + score_multiplier;
             System.out.printf("Score: %d\n", current_score);

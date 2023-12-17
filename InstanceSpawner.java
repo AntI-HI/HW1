@@ -5,6 +5,7 @@ public class InstanceSpawner implements Runnable
 {
     private ObjectTypes object_type;
     private GameManager handler;
+    private final int max_wait_ms = 4000;   // maximum spawn time between objects in milliseconds.
 
     public InstanceSpawner(ObjectTypes type, GameManager handler)
     {
@@ -43,7 +44,7 @@ public class InstanceSpawner implements Runnable
 
         while(true)
         {
-            Thread.sleep(Math.abs(r.nextLong() % 1000)); // wait a random time up to 1 second
+            Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
             if (dataPool.getSpeed() > 0)
             {
                 InstantiateObject();
