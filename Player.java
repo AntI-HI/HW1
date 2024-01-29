@@ -14,6 +14,8 @@ public class Player extends GameObject
     private boolean is_descending;
     private boolean is_dead;
 
+    private int player_health;
+
     public static Player player_instance = null;
 
     public static Player createPlayerInstance(int _xPos, int _yPos, int width, int height)
@@ -21,7 +23,6 @@ public class Player extends GameObject
         if (player_instance == null)
         {
             player_instance = new Player(_xPos, _yPos, width, height);
-            
         }
 
         return player_instance;
@@ -45,6 +46,7 @@ public class Player extends GameObject
         playerSpeed = 0;
         first_jump = true;
         is_jumping  = false;
+        player_health = 3;
 
         player_instance = this;
     }
@@ -92,6 +94,11 @@ public class Player extends GameObject
     {
         this.playerSpeed = speed;
         dataPool.setSpeed(speed);
+    }
+
+    public int getPlayerHealth()
+    {
+        return this.player_health;
     }
 
     public void ascend()
@@ -159,5 +166,23 @@ public class Player extends GameObject
     public void set_initial_jump_speed(int speed)
     {
         initial_jump_speed = speed;
+    }
+
+    public void handle_powerup(Powerup object)
+    {
+
+    }
+
+    public void handle_clash(Obstacle object)
+    {
+        if (player_health > 0)
+        {
+            player_health--;
+        }
+        if (player_health == 0)
+        {
+            System.out.println("You Died!");
+
+        }
     }
 }

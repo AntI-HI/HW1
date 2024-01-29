@@ -62,7 +62,7 @@ public class ScoreManager
         this.obstacle = obstacle;
     }
 
-    public boolean PerformScore()
+    public boolean PerformScore(int score_multiplier)
     {
         if (!obstacle.collides && player.xPos > obstacle.xPos + obstacle.width)
         {

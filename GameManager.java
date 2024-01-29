@@ -29,8 +29,12 @@ public class GameManager
 	public static int obstacle_width  = 100;
 	public static int obstacle_height = 100;
 
+	public static int powerup_width	  = 100;
+	public static int powerup_height  = 100;
+
 	private   Player 		  player;
 	private   Obstacle        obstacle;
+	private	  Powerup		  powerup;
 	private   Background 	  background;
 	private   ScoreManager    scoreManager;
 	private	  AnimationPane   animationPane;
@@ -51,9 +55,50 @@ public class GameManager
 
 		addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
-		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
+		addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
 		addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
+		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
     }
+
+	private ImageFilter filterTransparentForPowerup()
+	{
+		ImageFilter filter = new RGBImageFilter()
+		{
+			int filterColor = -394759;
+
+			public final int filterRGB(int x, int y, int rgb)
+			{
+				if (rgb == filterColor)
+				{
+					rgb = rgb & 0x00FFFFFF;
+					return rgb;
+				}
+				else
+				{
+					return rgb;
+				}
+			}
+		};
+
+		return filter;
+	}
+
+	private void addPowerupSprite(String sprite,
+								int width,
+								int height,
+								boolean requires_filter) throws IOException
+	{
+		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+		if (requires_filter)
+		{
+			ImageFilter   filter 		  = filterTransparentForPowerup();
+			ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+			Image 		  transparentImg  = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+			img	= transparentImg;
+		}
+		DataPool.getInstance().setPowerupSprite(img);
+	}
 
 	private void addBackgroundSprite(String backgroundImg, int background_width, int background_height)
 	{
@@ -116,13 +161,33 @@ public class GameManager
 			obj = this.player;
 			scoreManager.setPlayer(player);
 		}
-		else
+		else if (type == ObjectTypes.OBSTACLE)
 		{
 			img = dataPool.getObstacleSprite();
 			int width  = img.getWidth(null);
 			int height = img.getHeight(null);
 			this.obstacle = new Obstacle(posX, posY, width, height);
 			obj = this.obstacle;
+			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
+			if (objects.size() == 1)
+			{
+				scoreManager.pause = false;	  // Unpause the score calculation utility for the first obstacle spawn.
+				physicsManager.pause = false; // Unpause the physics calculation utility for the first obstacle spawn.
+		
+			}
+		}
+		else
+		{
+			img = dataPool.getPowerupSprite();
+			int width  = img.getWidth(null);
+			int height = img.getHeight(null);
+			this.powerup = new ScorePowerup();
+			this.powerup.setObjectPositionAndBounds(posX, posY, width, height);
+			this.powerup = new X2Powerup((ScorePowerup)this.powerup);
+			// this.powerup = new X2Powerup((ScorePowerup)this.powerup);
+			// this.powerup = new X5Powerup((ScorePowerup)this.powerup);
+
+			obj = this.powerup;
 			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
 			if (objects.size() == 1)
 			{
@@ -143,6 +208,8 @@ public class GameManager
 
 			public final int filterRGB(int x, int y, int rgb)
 			{
+				// System.out.printf("x: %d, y: %d, rgb: %d\n", x, y, rgb);
+
 				if (rgb == 0xFFF6F6F6)
 				{
 					rgb = rgb & 0x00FFFFFF;
@@ -208,26 +275,29 @@ public class GameManager
 
 	public void Start()
 	{
-		this.instanceSpawner = new InstanceSpawner(ObjectTypes.OBSTACLE, this);
+		this.instanceSpawner = new InstanceSpawner(this);
 		Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
 		t1.start();
 	}
 
 	public void Update()
-    {		
-		for(int i = 0; i < objects.size(); i++)
+    {
+		if (player.getPlayerHealth() > 0)
 		{
-			objects.get(i).update();
+			for(int i = 0; i < objects.size(); i++)
+			{
+				objects.get(i).update();
+			}
+			background.Update();
+	
+			// TODO: Encapsulate those procedures to something like state manager.
+			boolean collides = CollisionCheck();
+			if (!collides)
+			{
+				UpdateScore();
+			}
+			object_selector();
 		}
-		background.Update();
-
-		// TODO: Encapsulate those procedures to something like state manager.
-		boolean collides = CollisionCheck();
-		if (!collides)
-		{
-			UpdateScore();
-		}
-		object_selector();
 	}
 
 	private void object_selector()
@@ -258,10 +328,19 @@ public class GameManager
 		boolean collides = false;
 		if (!physicsManager.pause)
 		{
-			collides = physicsManager.isCollide(player, objects.get(current_obstacle_idx));
+			GameObject object = objects.get(current_obstacle_idx);
+			collides = physicsManager.isCollide(player, object);
 			
-			if(collides)
+			if (collides)
 			{
+				if (object instanceof Obstacle)
+				{
+					player.handle_clash((Obstacle)object);
+				}
+				else if (object instanceof Powerup)
+				{
+					player.handle_powerup((Powerup)object);
+				}
 				physicsManager.pause = true; // Collision check only occurs once for every obstacle
 			}
 		}
@@ -274,36 +353,30 @@ public class GameManager
 		// Make sure there is the next obstacle in the objects container
 		if (!scoreManager.pause)
 		{
-			// Acknowledge the current obstacle as the target score trigger.
-			scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
-
-			// Perform Score action if certain conditions are performed.
-			performed = scoreManager.PerformScore();
-			if (performed)
+			GameObject object = objects.get(current_obstacle_idx);
+			if (object instanceof Obstacle)
 			{
-				scoreManager.pause = true;	// Wait until new obstacle object spawns.
+				// Acknowledge the current obstacle as the target score trigger.
+				scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
+	
+				// Perform Score action if certain conditions are performed.
+				if (this.powerup != null)
+				{
+					ScorePowerup scorePowerup = (ScorePowerup)this.powerup;
+					performed = scoreManager.PerformScore(scorePowerup.getScoreMultiplier());
+
+				}
+				else
+				{
+					performed = scoreManager.PerformScore(1);
+				}
+				if (performed)
+				{
+					scoreManager.pause = true;	// Wait until new obstacle object spawns.
+				}
 			}
-			// if (performed)
-			// {
-			// 	// if the score is achieved and the current obstacle is not last game object on the list
-			// 	// get the next obstacle.
-			// 	if (current_obstacle_idx < objects.size() - 1)
-			// 	{
-			// 		scoreManager.pause = false;
-			// 		current_obstacle_idx += 1;
-			// 		physicsManager.pause = false;
-			// 	}
-			// 	else	// Wait for the new obstacle object to be spawned.
-			// 	{
-			// 		// During pause state, update the index only one time to prepare for next calculations.
-			// 		if (!scoreManager.pause)
-			// 		{
-			// 			current_obstacle_idx += 1;
-			// 		}
-			// 		scoreManager.pause = true;	// Wait until new obstacle object spawns.
-			// 	}
-			// }
 		}
+
 		return performed;
 	}
 	

@@ -4,6 +4,7 @@ public class DataPool
 {
     private Image player_sprite;
     private Image obstacle_sprite;
+    private Image powerup_sprite;
     private int speed;
 
     private static DataPool instance = null;
@@ -38,6 +39,11 @@ public class DataPool
         obstacle_sprite = sprite;
     }
 
+    public void setPowerupSprite(Image sprite)
+    {
+        powerup_sprite = sprite;
+    }
+
     public void setSpeed(int speed)
     {
         this.speed = speed;
@@ -52,7 +58,10 @@ public class DataPool
     {
         return obstacle_sprite;
     }
-
+    public Image getPowerupSprite()
+    {
+        return powerup_sprite;
+    }
     public int getSpeed()
     {
         return speed;

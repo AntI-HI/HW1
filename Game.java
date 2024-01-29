@@ -21,6 +21,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 
 	public static final String playerSprite   = "player_sprite.png";
 	public static final String obstacleSprite = "obstacle.jpeg";
+	public static final String powerupSprite  = "powerup2.png";
 	public static final String background_img = "background3.gif";
 
 	public static final int window_width  = 1280;

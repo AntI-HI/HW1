@@ -54,7 +54,14 @@ public class PhysicsManager
         {
             is_collide = true;
             target.collides = true;
-            System.out.println("Collision Happened");
+            if (target instanceof Obstacle)
+            {
+                System.out.println("Collided with obstacle");
+            }
+            else
+            {
+                System.out.println("Collided with powerup");
+            }
         }
         // TODO: Think about using event management properly. Maybe creating a new class named Event Manager.
         source.set_event(is_collide);   

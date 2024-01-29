@@ -3,13 +3,12 @@ import java.util.Random;
 
 public class InstanceSpawner implements Runnable
 {
-    private ObjectTypes object_type;
     private GameManager handler;
     private final int max_wait_ms = 4000;   // maximum spawn time between objects in milliseconds.
+    private boolean spawn = true;
 
-    public InstanceSpawner(ObjectTypes type, GameManager handler)
+    public InstanceSpawner(GameManager handler)
     {
-        this.object_type = type;
         this.handler     = handler;
     }
     
@@ -17,40 +16,57 @@ public class InstanceSpawner implements Runnable
     public void run()
     {
         try {
-            RandomInitializer();
+            RandomObjectInitializer();
         } catch (InterruptedException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }        
     }
 
-    public void setObjectToSpawn(ObjectTypes type)
+    public void InstantiateObject(ObjectTypes object_type) throws IOException
     {
-        object_type = type;
+        handler.AddObject(1280, 550, object_type);
     }
 
-    public void InstantiateObject() throws IOException
-    {
-        if (object_type == ObjectTypes.OBSTACLE)
-        {
-            handler.AddObject(1280, 550, object_type);
-        }            
-    }
-
-    public void RandomInitializer() throws InterruptedException, IOException
+    public void RandomObjectInitializer() throws InterruptedException, IOException
     {
         Random r = new Random();
-        DataPool dataPool = DataPool.getInstance();
 
-        while(true)
+        while (spawn)
         {
-            Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
-            if (dataPool.getSpeed() > 0)
+            long result = Math.abs(r.nextLong() % 2); // wait a random time up to 1 second
+            if (result == 0)
             {
-                InstantiateObject();
+                CreateObstacle();
+            }
+            else
+            {
+                CreatePowerup();
             }
         }
     }
 
+    public void CreateObstacle() throws InterruptedException, IOException
+    {
+        Random r = new Random();
+        DataPool dataPool = DataPool.getInstance();
 
+        Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
+        if (dataPool.getSpeed() > 0)
+        {
+            InstantiateObject(ObjectTypes.OBSTACLE);
+        }
+    }
+
+    public void CreatePowerup() throws InterruptedException, IOException
+    {
+        Random r = new Random();
+        DataPool dataPool = DataPool.getInstance();
+
+        Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
+        if (dataPool.getSpeed() > 0)
+        {
+            InstantiateObject(ObjectTypes.POWERUP);
+        }
+    }
 }

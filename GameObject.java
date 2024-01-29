@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 enum ObjectTypes
 {
 	PLAYER,
-	OBSTACLE
+	OBSTACLE, POWERUP
 }
 
 public abstract class GameObject /* extends JPanel */
@@ -13,13 +13,19 @@ public abstract class GameObject /* extends JPanel */
 	protected float velX, velY;
 	protected Rectangle hitbox = new Rectangle();
 	protected double boundpos = 0.03; // goes 3% into the sprite of the image
-	protected BufferedImage img;
+	protected BufferedImage img = null;
 	protected Color B = new Color(0, 0, 0);
 	// mainly used for box
 	protected Rectangle top = new Rectangle(), bottom = new Rectangle(), right = new Rectangle(), left = new Rectangle();
 	protected DataPool dataPool;
 
 	protected boolean collides = false;
+
+	public GameObject()
+	{
+		// setStart(-1, -1, 0, 0);
+		// setVelocity(0f, 0f);
+	}
 
 	public GameObject(int _xPos, int _yPos, int _width, int _height)
 	{
@@ -86,6 +92,19 @@ public abstract class GameObject /* extends JPanel */
 	public void set_event(boolean is_collide)
 	{
 		collides = is_collide;
+	}
+
+	public void setObjectPositionAndBounds(int _xPos, int _yPos, int _width, int _height)
+	{
+		setStart(_xPos, _yPos, _width, _height);
+		setVelocity(1f, 0f);
+
+		hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
+	}
+
+	protected void GameObjectCreateGraphics(int _width, int _height)
+	{
+		img = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public abstract void update();
