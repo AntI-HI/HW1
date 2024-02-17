@@ -181,11 +181,9 @@ public class GameManager
 			img = dataPool.getPowerupSprite();
 			int width  = img.getWidth(null);
 			int height = img.getHeight(null);
-			this.powerup = new ScorePowerup();
+			this.powerup = new Powerup();
+
 			this.powerup.setObjectPositionAndBounds(posX, posY, width, height);
-			this.powerup = new X2Powerup((ScorePowerup)this.powerup);
-			// this.powerup = new X2Powerup((ScorePowerup)this.powerup);
-			// this.powerup = new X5Powerup((ScorePowerup)this.powerup);
 
 			obj = this.powerup;
 			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
@@ -208,8 +206,6 @@ public class GameManager
 
 			public final int filterRGB(int x, int y, int rgb)
 			{
-				// System.out.printf("x: %d, y: %d, rgb: %d\n", x, y, rgb);
-
 				if (rgb == 0xFFF6F6F6)
 				{
 					rgb = rgb & 0x00FFFFFF;
@@ -358,18 +354,11 @@ public class GameManager
 			{
 				// Acknowledge the current obstacle as the target score trigger.
 				scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
-	
-				// Perform Score action if certain conditions are performed.
-				if (this.powerup != null)
-				{
-					ScorePowerup scorePowerup = (ScorePowerup)this.powerup;
-					performed = scoreManager.PerformScore(scorePowerup.getScoreMultiplier());
+				
+				ScoreManager scoreManager = ScoreManager.getInstance();
 
-				}
-				else
-				{
-					performed = scoreManager.PerformScore(1);
-				}
+				performed = scoreManager.PerformScore(scoreManager.score_powerup.getScoreMultiplier());
+				
 				if (performed)
 				{
 					scoreManager.pause = true;	// Wait until new obstacle object spawns.

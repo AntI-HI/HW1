@@ -1,9 +1,7 @@
-public class ScorePowerup extends Powerup
+public class ScorePowerup
 {
-
     public ScorePowerup()
     {
-        super();
     }
 
 	public int getScoreMultiplier()

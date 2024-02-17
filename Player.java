@@ -168,9 +168,19 @@ public class Player extends GameObject
         initial_jump_speed = speed;
     }
 
-    public void handle_powerup(Powerup object)
+    public void handle_powerup(Powerup scorePowerup)
     {
-
+        ScorePowerup _scorePowerup;
+        ScoreManager scoreManager = ScoreManager.getInstance();
+        if (scoreManager.score_powerup == null)
+        {
+            _scorePowerup = new ScorePowerup();
+			scoreManager.setScorePowerup(_scorePowerup);
+        }
+        else
+        {
+            scoreManager.score_powerup = new X2Powerup(scoreManager.score_powerup);
+        }
     }
 
     public void handle_clash(Obstacle object)

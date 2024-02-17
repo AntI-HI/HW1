@@ -2,11 +2,12 @@ public class ScoreManager
 {
     public static ScoreManager instance;
 
-    private int score_multiplier;
     private int current_score;
 
     private Player   player;
     private Obstacle obstacle;
+
+    public ScorePowerup score_powerup;
 
     public boolean pause;
 
@@ -27,24 +28,24 @@ public class ScoreManager
 
     private ScoreManager()
     {
-        score_multiplier = 1;
+        score_powerup    = new ScorePowerup();
         current_score    = 0;
         pause            = true;
     }
 
-    public int getScoreMultiplier()
+    public ScorePowerup getScorePowerup()
     {
-        return score_multiplier;
+        return score_powerup;
+    }
+
+    public void setScorePowerup(ScorePowerup _score_powerup)
+    {
+        score_powerup = _score_powerup;
     }
 
     public int getCurrentScore()
     {
         return current_score;
-    }
-
-    public void setScoreMultiplier(int multiplier)
-    {
-        score_multiplier = multiplier;
     }
 
     public void updateScore(int value)
