@@ -137,7 +137,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 
 	public void keyTyped(KeyEvent arg0) {}
 
-	// Calls the Game Manager's handler and delegates game logic to Game Manager.
+	// Calls the Game Manager's Update method and instantiates game logic to Game Manager.
 	private void UpdateGlobal()
 	{
 		game_manager.Update();
