@@ -23,6 +23,7 @@ public class Player extends GameObject
         if (player_instance == null)
         {
             player_instance = new Player(_xPos, _yPos, width, height);
+            player_instance.jump_strategy = new LowJump();
         }
 
         return player_instance;
@@ -41,7 +42,6 @@ public class Player extends GameObject
         g2d.drawImage(dataPool.getPlayerSprite(), 0, 0, null);
         g2d.dispose();
 
-        jump_strategy = new LowJump();
         is_dead = false;
         playerSpeed = 0;
         first_jump = true;

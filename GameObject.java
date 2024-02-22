@@ -15,17 +15,13 @@ public abstract class GameObject /* extends JPanel */
 	protected double boundpos = 0.03; // goes 3% into the sprite of the image
 	protected BufferedImage img = null;
 	protected Color B = new Color(0, 0, 0);
-	// mainly used for box
+
 	protected Rectangle top = new Rectangle(), bottom = new Rectangle(), right = new Rectangle(), left = new Rectangle();
 	protected DataPool dataPool;
 
 	protected boolean collides = false;
 
-	public GameObject()
-	{
-		// setStart(-1, -1, 0, 0);
-		// setVelocity(0f, 0f);
-	}
+	public GameObject(){}
 
 	public GameObject(int _xPos, int _yPos, int _width, int _height)
 	{

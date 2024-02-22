@@ -13,16 +13,18 @@ public class Game extends JFrame implements KeyListener, Runnable
 	protected final static int GHEIGHT 	= 720;	/*(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*/
 	protected final static int SCALE 	= 72;
 
+	protected final static double amountOfTicks = 60.0;
+
 	protected 	static Thread  thread;
 	private 	static boolean running;
 
-	protected static Game 		 	game;
-	protected static GameManager 	handler;
+	protected static Game 		 game;
+	protected static GameManager game_manager;
 
 	public static final String playerSprite   = "player_sprite.png";
 	public static final String obstacleSprite = "obstacle.jpeg";
-	public static final String powerupSprite  = "powerup2.png";
-	public static final String background_img = "background3.gif";
+	public static final String powerupSprite  = "powerup.png";
+	public static final String background_img = "background.gif";
 
 	public static final int window_width  = 1280;
 	public static final int window_height = 720;
@@ -52,8 +54,8 @@ public class Game extends JFrame implements KeyListener, Runnable
 	{
 		try
 		{
-			handler = new GameManager();
-			handler.Start();
+			game_manager = new GameManager();
+			game_manager.Start();
 		}
 		catch (IOException e)
 		{
@@ -68,7 +70,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setLayout(new BorderLayout());
 
-			frame.add(handler.getAnimationPane());
+			frame.add(game_manager.getAnimationPane());
 			frame.setPreferredSize(new Dimension(window_width, window_height));
 			frame.pack();
 			frame.setLocationRelativeTo(null);
@@ -103,7 +105,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 	public void keyPressed(KeyEvent evt) 
 	{
 		int key = evt.getKeyCode();
-		Player player = handler.getPlayer();
+		Player player = game_manager.getPlayer();
 		
 		if (key == KeyEvent.VK_RIGHT)
 		{
@@ -125,7 +127,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 	public void keyReleased(KeyEvent evt)
 	{
 		int key = evt.getKeyCode();
-		Player player = handler.getPlayer();
+		Player player = game_manager.getPlayer();
 
 		if(key == KeyEvent.VK_RIGHT)
 		{
@@ -138,8 +140,8 @@ public class Game extends JFrame implements KeyListener, Runnable
 	// Calls the Game Manager's handler and delegates game logic to Game Manager.
 	private void UpdateGlobal()
 	{
-		handler.Update();
-		handler.draw();
+		game_manager.Update();
+		game_manager.draw();
 	}
 
 	@Override
@@ -147,7 +149,6 @@ public class Game extends JFrame implements KeyListener, Runnable
 	{
 		this.requestFocus();
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks;
 		
 		long timer = System.currentTimeMillis();
@@ -174,16 +175,6 @@ public class Game extends JFrame implements KeyListener, Runnable
 
 	public void stop()
 	{
-		// running = false;
-		try
-		{
-			thread.stop();
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
 		System.exit(0);
 	}
 }
