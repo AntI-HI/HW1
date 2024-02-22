@@ -12,7 +12,7 @@ public class LowJump implements JumpStrategy
     @Override
     public void Jump()
     {
-        System.out.println("LOW JUMP");
+        // System.out.println("LOW JUMP");
         
         if (player.is_jumping())
         {

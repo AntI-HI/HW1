@@ -40,9 +40,10 @@ public class GameManager
 	private	  AnimationPane   animationPane;
 	private	  PhysicsManager  physicsManager;
 	public    InstanceSpawner instanceSpawner;
+	public GameEventManager  event_manager;
 
 	private int current_obstacle_idx = 1;
-	private boolean new_spawned	= false;
+	public boolean new_spawned	= false;
 	
     public GameManager() throws IOException
 	{
@@ -57,8 +58,14 @@ public class GameManager
 		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
 		addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
 		addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
-		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
+
+		Game_Manager_Early_Init();
     }
+	
+	private void Game_Manager_Early_Init()
+	{
+		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
+	}
 
 	private ImageFilter filterTransparentForPowerup()
 	{
@@ -148,8 +155,8 @@ public class GameManager
 
 	public void AddObject(int posX, int posY, ObjectTypes type)
 	{
-		DataPool dataPool   = DataPool.getInstance();
-		Image img;
+		DataPool   dataPool = DataPool.getInstance();
+		Image 	   img;
 		GameObject obj;
 
 		if (type == ObjectTypes.PLAYER)
@@ -168,12 +175,11 @@ public class GameManager
 			int height = img.getHeight(null);
 			this.obstacle = new Obstacle(posX, posY, width, height);
 			obj = this.obstacle;
-			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
+			new_spawned = true;				// Means the new object is created. It used for waking the object selector.
 			if (objects.size() == 1)
 			{
-				scoreManager.pause = false;	  // Unpause the score calculation utility for the first obstacle spawn.
-				physicsManager.pause = false; // Unpause the physics calculation utility for the first obstacle spawn.
-		
+				scoreManager.pause = false;
+				physicsManager.pause = false;
 			}
 		}
 		else
@@ -196,6 +202,12 @@ public class GameManager
 		}
 		
 		objects.add(obj);
+	}
+
+	// TODO: Once object creation design is fully functional, this function will be removed.
+	public void addObstacle(GameObject obstacle)
+	{
+		objects.add(obstacle);
 	}
 
 	private ImageFilter filterTransparentForPlayer()
@@ -271,6 +283,7 @@ public class GameManager
 
 	public void Start()
 	{
+		this.event_manager   = GameEventManager.CreateEventManager(this);
 		this.instanceSpawner = new InstanceSpawner(this);
 		Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
 		t1.start();
@@ -412,5 +425,10 @@ public class GameManager
 	public void removeObject(GameObject tempObject)
 	{
 		objects.remove(tempObject);
+	}
+
+	public int getNumberOfGameObjects()
+	{
+		return objects.size();
 	}
 }

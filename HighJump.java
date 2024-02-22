@@ -12,7 +12,7 @@ public class HighJump implements JumpStrategy
     @Override
     public void Jump()
     {
-        System.out.println("High Jump!");
+        // System.out.println("High Jump!");
 
         if (player.is_jumping())
         {
