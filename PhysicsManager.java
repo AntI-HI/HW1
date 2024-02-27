@@ -23,29 +23,6 @@ public class PhysicsManager
         return instance;
     }
 
-    // TODO: This dead code will be removed.
-    // public void CollisionCheck(GameObject source, LinkedList<GameObject> objects)
-    // {
-    //     boolean is_collide = false;
-
-    //     current_time = System.currentTimeMillis();
-    //     if (current_time - last_update_time > 1000)
-    //     {
-    //         for(int i = 1; i < objects.size(); i++)
-    //         {
-    //             GameObject tempObject = objects.get(i);
-    //             if(source.getBounds().intersects(tempObject.hitbox)) 
-    //             {
-    //                 last_update_time = System.currentTimeMillis();
-    //                 is_collide = true;
-    //                 System.out.println("Collision Happened");
-    //                 break;
-    //             }
-    //         }
-    //         source.set_event(is_collide);
-    //     }
-    // }
-
     public boolean isCollide(GameObject source, GameObject target)
     {
         boolean is_collide = false;
