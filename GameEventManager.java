@@ -28,7 +28,12 @@ public class GameEventManager
 
     public void handle_event(GameObject obj)
     {
-        if (obj instanceof Obstacle)
+        if (obj instanceof Player)
+        {
+            game_manager.setPlayer((Player)obj);
+            ScoreManager.getInstance().setPlayer((Player)obj);
+        }
+        else
         {
             game_manager.new_spawned = true;
             int num_of_objects = game_manager.getNumberOfGameObjects();

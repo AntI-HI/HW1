@@ -20,28 +20,18 @@ public class Obstacle extends GameObject
         hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
     }
 
-    public static GameObject Create()
+    public static GameObject Create(int pos_x, int pos_y)
     {
-        // handler.AddObject(1280, 550, object_type);
-
         DataPool   dataPool = DataPool.getInstance();
 		Image 	   img = dataPool.getObstacleSprite();
 		GameObject obstacle;
         int        width;
         int        height;
 
-        img = dataPool.getObstacleSprite();
         width  = img.getWidth(null);
         height = img.getHeight(null);
-        obstacle = new Obstacle(1280, 550, width, height);
-        // obj = this.obstacle;
-        // new_spawned = true;				// Means the new object is created. It used for waking the object selector.
-        // if (objects.size() == 1)
-        // {
-        //     scoreManager.pause = false;	  // Unpause the score calculation functionality for the first obstacle spawn.
-        //     physicsManager.pause = false; // Unpause the physics calculation functionality for the first obstacle spawn.
-    
-        // }
+        obstacle = new Obstacle(pos_x, pos_y, width, height);
+
         return obstacle;
     }
 }

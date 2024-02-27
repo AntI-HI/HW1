@@ -8,6 +8,9 @@ public class InstanceSpawner implements Runnable
     private final int max_wait_ms = 4000;   // maximum spawn time between objects in milliseconds.
     private boolean spawn = true;
 
+    private int spawn_pos_x = 1280;
+    private int spawn_pos_y = 550;
+
     public InstanceSpawner(GameManager _game_manager)
     {
         this.game_manager = _game_manager;
@@ -21,15 +24,6 @@ public class InstanceSpawner implements Runnable
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }        
-    }
-
-    public void InstantiateObject(ObjectTypes object_type) throws IOException
-    {
-
-        // TODO: Isolate this function. Every game object will have their own Create method.
-        game_manager.AddObject(1280, 550, object_type);
-
-
     }
 
     public void RandomObjectInitializer() throws InterruptedException, IOException
@@ -58,10 +52,9 @@ public class InstanceSpawner implements Runnable
         Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
         if (dataPool.getSpeed() > 0)
         {
-            // InstantiateObject(ObjectTypes.OBSTACLE);
-            GameObject obstacle = Obstacle.Create();
+            GameObject obstacle = Obstacle.Create(spawn_pos_x, spawn_pos_y);
             GameEventManager.getInstance().handle_event(obstacle);
-            game_manager.addObstacle(obstacle);
+            game_manager.addObject(obstacle);
         }
     }
 
@@ -73,7 +66,16 @@ public class InstanceSpawner implements Runnable
         Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
         if (dataPool.getSpeed() > 0)
         {
-            InstantiateObject(ObjectTypes.POWERUP);
+            GameObject powerup = Powerup.Create(spawn_pos_x, spawn_pos_y);
+            GameEventManager.getInstance().handle_event(powerup);
+            game_manager.addObject(powerup);
         }
+    }
+
+    public void CreatePlayer(int pos_x, int pos_y) throws InterruptedException, IOException
+    {
+        GameObject player = Player.Create(pos_x, pos_y);
+        GameEventManager.getInstance().handle_event(player);
+        game_manager.addObject(player);
     }
 }

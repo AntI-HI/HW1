@@ -1,5 +1,5 @@
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 public class Player extends GameObject
 {
@@ -18,11 +18,13 @@ public class Player extends GameObject
 
     public static Player player_instance = null;
 
-    public static Player createPlayerInstance(int _xPos, int _yPos, int width, int height)
+    public static Player Create(int _xPos, int _yPos)
     {
         if (player_instance == null)
         {
-            player_instance = new Player(_xPos, _yPos, width, height);
+            DataPool   dataPool = DataPool.getInstance();
+	    	Image 	   img      = dataPool.getPlayerSprite();
+            player_instance = new Player(_xPos, _yPos, img.getWidth(null), img.getHeight(null));
             player_instance.jump_strategy = new LowJump();
         }
 
@@ -34,7 +36,7 @@ public class Player extends GameObject
         return player_instance;
     }
 
-    public Player(int _xPos, int _yPos, int width, int height)
+    private Player(int _xPos, int _yPos, int width, int height)
     {
         super(_xPos, _yPos, width, height);
 

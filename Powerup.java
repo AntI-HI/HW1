@@ -4,8 +4,6 @@ import java.util.Random;
 
 public class Powerup extends GameObject
 {
-    int jump_mode = 0;
-
     public ScorePowerup score_powerup = null;
 
     public Powerup()
@@ -64,5 +62,21 @@ public class Powerup extends GameObject
         int playerSpeed = dataPool.getSpeed();
         xPos -= playerSpeed;
         hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
+    }
+
+    public static GameObject Create(int pos_x, int pos_y)
+    {
+        DataPool   dataPool = DataPool.getInstance();
+		Image 	   img = dataPool.getPowerupSprite();
+		GameObject powerup;
+        int        width;
+        int        height;
+
+        width  = img.getWidth(null);
+        height = img.getHeight(null);
+        powerup = new Powerup();
+        powerup.setObjectPositionAndBounds(pos_x, pos_y, width, height);
+        
+        return powerup;
     }
 }

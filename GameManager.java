@@ -33,14 +33,13 @@ public class GameManager
 	public static int powerup_height  = 100;
 
 	private   Player 		  player;
-	private   Obstacle        obstacle;
-	private	  Powerup		  powerup;
 	private   Background 	  background;
 	private   ScoreManager    scoreManager;
 	private	  AnimationPane   animationPane;
 	private	  PhysicsManager  physicsManager;
 	public    InstanceSpawner instanceSpawner;
-	public GameEventManager  event_manager;
+	public    GameEventManager  event_manager;
+
 
 	private int current_obstacle_idx = 1;
 	public boolean new_spawned	= false;
@@ -58,13 +57,21 @@ public class GameManager
 		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
 		addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
 		addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
-
-		Game_Manager_Early_Init();
     }
 	
 	private void Game_Manager_Early_Init()
 	{
-		AddObject(player_posX, player_posY, ObjectTypes.PLAYER);
+		try {
+			this.event_manager   = GameEventManager.CreateEventManager(this);
+			this.instanceSpawner = new InstanceSpawner(this);
+			instanceSpawner.CreatePlayer(player_posX, player_posY);
+			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
+		t1.start();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private ImageFilter filterTransparentForPowerup()
@@ -153,69 +160,10 @@ public class GameManager
 		DataPool.getInstance().setPlayerSprite(img);
 	}
 
-	public void AddObject(int posX, int posY, ObjectTypes type)
-	{
-		DataPool   dataPool = DataPool.getInstance();
-		Image 	   img;
-		GameObject obj;
-
-		if (type == ObjectTypes.PLAYER)
-		{
-			img = dataPool.getPlayerSprite();
-			int width  = img.getWidth(null);
-			int height = img.getHeight(null);
-			this.player = Player.createPlayerInstance(posX, posY, width, height);
-			obj = this.player;
-			scoreManager.setPlayer(player);
-		}
-		else if (type == ObjectTypes.OBSTACLE)
-		{
-			img = dataPool.getObstacleSprite();
-			int width  = img.getWidth(null);
-			int height = img.getHeight(null);
-			this.obstacle = new Obstacle(posX, posY, width, height);
-			obj = this.obstacle;
-			new_spawned = true;				// Means the new object is created. It used for waking the object selector.
-			if (objects.size() == 1)
-			{
-				scoreManager.pause = false;
-				physicsManager.pause = false;
-			}
-		}
-		else
-		{
-			img = dataPool.getPowerupSprite();
-			int width  = img.getWidth(null);
-			int height = img.getHeight(null);
-			this.powerup = new Powerup();
-
-			this.powerup.setObjectPositionAndBounds(posX, posY, width, height);
-
-			obj = this.powerup;
-			new_spawned = true;	// Means the new object is created. It used for waking the object selector.
-			if (objects.size() == 1)
-			{
-				scoreManager.pause = false;	  // Unpause the score calculation utility for the first obstacle spawn.
-				physicsManager.pause = false; // Unpause the physics calculation utility for the first obstacle spawn.
-		
-			}
-		}
-		
-		objects.add(obj);
-	}
-
-	// TODO: Once object creation design is fully functional, this function will be removed.
-	public void addObstacle(GameObject obstacle)
-	{
-		objects.add(obstacle);
-	}
-
 	private ImageFilter filterTransparentForPlayer()
 	{
 		ImageFilter filter = new RGBImageFilter()
 		{
-			int transparentColor = 0xFF000000;
-
 			public final int filterRGB(int x, int y, int rgb)
 			{
 				if (rgb == 0xFFF6F6F6)
@@ -223,10 +171,6 @@ public class GameManager
 					rgb = rgb & 0x00FFFFFF;
 					return rgb;
 				}
-				// if ((rgb | 0xFF000000) == transparentColor)
-				// {
-				// 	return 0x00FFFFFF & rgb;
-				// }
 				else
 				{
 					return rgb;
@@ -283,10 +227,7 @@ public class GameManager
 
 	public void Start()
 	{
-		this.event_manager   = GameEventManager.CreateEventManager(this);
-		this.instanceSpawner = new InstanceSpawner(this);
-		Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
-		t1.start();
+		Game_Manager_Early_Init();
 	}
 
 	public void Update()
@@ -307,6 +248,11 @@ public class GameManager
 			}
 			object_selector();
 		}
+	}
+
+	public void draw()
+    {
+		animationPane.paint();
 	}
 
 	private void object_selector()
@@ -381,10 +327,10 @@ public class GameManager
 
 		return performed;
 	}
-	
-	public void draw()
-    {
-		animationPane.paint();
+
+	public void addObject(GameObject object)
+	{
+		objects.add(object);
 	}
 
 	public Background getBackground()
@@ -395,11 +341,6 @@ public class GameManager
 	public Player getPlayer()
 	{
 		return this.player;
-	}
-
-	public Obstacle getObstacle()
-	{
-		return this.obstacle;
 	}
 
 	public AnimationPane getAnimationPane()
@@ -415,11 +356,6 @@ public class GameManager
 	public void setPlayer(GameObject gameObject)
 	{
 		this.player = (Player)gameObject;
-	}
-	
-	public void addObject(GameObject tempObject)
-	{
-		objects.add(tempObject);
 	}
 	
 	public void removeObject(GameObject tempObject)
