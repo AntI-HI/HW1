@@ -1,12 +1,10 @@
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import java.io.IOException;
 
 
-public class Game extends JFrame implements KeyListener, Runnable
+public class Game extends JFrame implements Runnable
 {
 	// private static final long serialVersionUID = 1L;
 	protected final static int GWIDTH 	= 1280;	/*(int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*/
@@ -18,7 +16,6 @@ public class Game extends JFrame implements KeyListener, Runnable
 	protected 	static Thread  thread;
 	private 	static boolean running;
 
-	protected static Game 		 game;
 	protected static GameManager game_manager;
 
 	public static final String playerSprite   = "assets/player_sprite.png";
@@ -29,7 +26,7 @@ public class Game extends JFrame implements KeyListener, Runnable
 	public static final int window_width  = 1280;
 	public static final int window_height = 720;
 
-	private static Game frame		   = null;
+	private static  Game frame		   = null;
 	private static int  instance_count = 0;
 
 	public static double delta = 0;
@@ -40,11 +37,13 @@ public class Game extends JFrame implements KeyListener, Runnable
 		Create_Game_Manager();
 		Set_Up_Frame();
 
-		game.Start();
+		frame.Start();
     }
 	
 	private void Start()
 	{
+		InputManager input_manager = new InputManager(game_manager);
+		this.addKeyListener(input_manager);
 		running = true;
 		thread = new Thread(this);
 		thread.start();
@@ -83,59 +82,20 @@ public class Game extends JFrame implements KeyListener, Runnable
 		if (instance_count == 0)
 		{
 			frame = new Game();
-			Game.game = frame;
 			instance_count++;
 			return frame;
 		}
 		else
 		{
-			return Game.game;
+			return Game.frame;
 		}
 	}
-
 
 	public Game()
 	{
-		addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
     }
-	
-
-	public void keyPressed(KeyEvent evt) 
-	{
-		int key = evt.getKeyCode();
-		Player player = game_manager.getPlayer();
-		
-		if (key == KeyEvent.VK_RIGHT)
-		{
-			if (!player.is_jumping())
-			{
-				player.setPlayerSpeed(20);
-			}
-		}
-		else if ( key == KeyEvent.VK_UP)
-		{
-			if (!player.is_jumping())
-			{
-				player.ascend();
-			}
-
-		}
-	}
-
-	public void keyReleased(KeyEvent evt)
-	{
-		int key = evt.getKeyCode();
-		Player player = game_manager.getPlayer();
-
-		if(key == KeyEvent.VK_RIGHT)
-		{
-			player.setPlayerSpeed(0);
-		}
-	}
-
-	public void keyTyped(KeyEvent arg0) {}
 
 	// Calls the Game Manager's Update method and instantiates game logic to Game Manager.
 	private void UpdateGlobal()
