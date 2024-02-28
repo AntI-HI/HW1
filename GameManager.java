@@ -37,7 +37,7 @@ public class GameManager
 	private   ScoreManager    scoreManager;
 	private	  AnimationPane   animationPane;
 	private	  PhysicsManager  physicsManager;
-	public    InstanceSpawner instanceSpawner;
+	public    ObjectSpawner instanceSpawner;
 	public    GameEventManager  event_manager;
 
 
@@ -63,7 +63,7 @@ public class GameManager
 	{
 		try {
 			this.event_manager   = GameEventManager.CreateEventManager(this);
-			this.instanceSpawner = new InstanceSpawner(this);
+			this.instanceSpawner = new ObjectSpawner(this);
 			instanceSpawner.CreatePlayer(player_posX, player_posY);
 			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
 		t1.start();

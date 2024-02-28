@@ -2,7 +2,7 @@ import java.beans.EventHandler;
 import java.io.IOException;
 import java.util.Random;
 
-public class InstanceSpawner implements Runnable
+public class ObjectSpawner implements Runnable
 {
     private GameManager game_manager;
     private final int max_wait_ms = 4000;   // maximum spawn time between objects in milliseconds.
@@ -11,7 +11,7 @@ public class InstanceSpawner implements Runnable
     private int spawn_pos_x = 1280;
     private int spawn_pos_y = 550;
 
-    public InstanceSpawner(GameManager _game_manager)
+    public ObjectSpawner(GameManager _game_manager)
     {
         this.game_manager = _game_manager;
     }
