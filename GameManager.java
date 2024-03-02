@@ -17,7 +17,7 @@ import javax.swing.ImageIcon;
 
 public class GameManager
 {
-	protected LinkedList<GameObject> objects = new LinkedList<GameObject>();
+	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
 	protected boolean up = false, down = false, right = false, left = false;
 	protected final static double GRAVITY = 1f;
 
@@ -40,7 +40,7 @@ public class GameManager
 	public    InstanceSpawner  instanceSpawner;
 	public    GameEventManager event_manager;
 
-	private int current_obstacle_idx = 1;
+	public int current_obstacle_idx = 1;
 	public boolean new_spawned	= false;
 	
     public GameManager() throws IOException
@@ -49,9 +49,8 @@ public class GameManager
 		scoreManager = ScoreManager.CreateScoreManager();
 
 		this.animationPane  = new AnimationPane(this);
-		this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance();
 		this.background     = new Background();
-
+		
 		addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
 		addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
@@ -62,7 +61,8 @@ public class GameManager
 	{
 		try {
 			this.event_manager   = GameEventManager.CreateEventManager(this);
-			this.instanceSpawner = new ObjectSpawner(this);
+			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
+			this.instanceSpawner = new InstanceSpawner(this);
 			instanceSpawner.CreatePlayer(player_posX, player_posY);
 			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)
 			t1.start();
@@ -239,7 +239,7 @@ public class GameManager
 			background.Update();
 	
 			// TODO: Encapsulate those procedures to something like state manager.
-			boolean collides = CollisionCheck();
+			boolean collides = this.physicsManager.CollisionCheck();
 			if (!collides)
 			{
 				UpdateScore();
@@ -276,30 +276,6 @@ public class GameManager
 		}
 	}
 
-	private boolean CollisionCheck()
-	{
-		boolean collides = false;
-		if (!physicsManager.pause)
-		{
-			GameObject object = objects.get(current_obstacle_idx);
-			collides = physicsManager.isCollide(player, object);
-			
-			if (collides)
-			{
-				if (object instanceof Obstacle)
-				{
-					player.handle_clash((Obstacle)object);
-				}
-				else if (object instanceof Powerup)
-				{
-					player.handle_powerup((Powerup)object);
-				}
-				physicsManager.pause = true; // Collision check only occurs once for every obstacle
-			}
-		}
-		return collides;
-	}
-
 	private boolean UpdateScore()
 	{
 		boolean performed = false;
@@ -329,6 +305,11 @@ public class GameManager
 	public void addObject(GameObject object)
 	{
 		objects.add(object);
+	}
+
+	public GameObject getGameObject(int idx)
+	{
+		return objects.get(idx);
 	}
 
 	public Background getBackground()

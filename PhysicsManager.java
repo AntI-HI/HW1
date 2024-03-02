@@ -3,17 +3,17 @@ import java.util.LinkedList;
 public class PhysicsManager
 {
     private static PhysicsManager instance = null;
-
+    private GameManager game_manager = null;
     // private long current_time;
     // private long last_update_time;
 
     public boolean pause = true;
 
-    public static PhysicsManager CreatePhysicsManagerInstance()
+    public static PhysicsManager CreatePhysicsManagerInstance(GameManager game_manager)
     {
         if (instance == null)
         {
-            instance = new PhysicsManager();
+            instance = new PhysicsManager(game_manager);
         }
         return instance;
     }
@@ -21,6 +21,11 @@ public class PhysicsManager
     public static PhysicsManager getInstance()
     {
         return instance;
+    }
+
+    private PhysicsManager(GameManager game_manager)
+    {
+        this.game_manager = game_manager;
     }
 
     public boolean isCollide(GameObject source, GameObject target)
@@ -44,5 +49,32 @@ public class PhysicsManager
         source.set_event(is_collide);   
 
         return is_collide;
+    }
+
+    public boolean CollisionCheck()
+    {
+        boolean collides = false;
+        Player player = game_manager.getPlayer();
+
+        if (!pause)
+		{
+			GameObject object = game_manager.getGameObject(game_manager.current_obstacle_idx);
+			collides = isCollide(player, object);
+			
+			if (collides)
+			{
+				if (object instanceof Obstacle)
+				{
+					player.handle_clash((Obstacle)object);
+				}
+				else if (object instanceof Powerup)
+				{
+					player.handle_powerup((Powerup)object);
+				}
+				pause = true; // Collision check only occurs once for every obstacle
+			}
+		}
+
+        return collides;
     }
 }
