@@ -46,7 +46,7 @@ public class GameManager
 	{
 		try {
 			DataPool.CreateDataPool();
-			scoreManager = ScoreManager.CreateScoreManager();
+			scoreManager = ScoreManager.CreateScoreManager(this);
 			
 			this.event_manager   = GameEventManager.CreateEventManager(this);
 			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
@@ -236,7 +236,7 @@ public class GameManager
 			boolean collides = this.physicsManager.CollisionCheck();
 			if (!collides)
 			{
-				UpdateScore();
+				scoreManager.UpdateScore();
 			}
 			object_selector();
 		}
@@ -268,32 +268,6 @@ public class GameManager
 				}
 			}
 		}
-	}
-
-	private boolean UpdateScore()
-	{
-		boolean performed = false;
-		// Make sure there is the next obstacle in the objects container
-		if (!scoreManager.pause)
-		{
-			GameObject object = objects.get(current_obstacle_idx);
-			if (object instanceof Obstacle)
-			{
-				// Acknowledge the current obstacle as the target score trigger.
-				scoreManager.setObstacle((Obstacle)objects.get(current_obstacle_idx));
-				
-				ScoreManager scoreManager = ScoreManager.getInstance();
-
-				performed = scoreManager.PerformScore(scoreManager.score_powerup.getScoreMultiplier());
-				
-				if (performed)
-				{
-					scoreManager.pause = true;	// Wait until new obstacle object spawns.
-				}
-			}
-		}
-
-		return performed;
 	}
 
 	public void addObject(GameObject object)

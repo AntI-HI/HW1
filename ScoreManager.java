@@ -1,6 +1,7 @@
 public class ScoreManager
 {
     public static ScoreManager instance;
+    private GameManager game_manager;
 
     private int current_score;
 
@@ -11,11 +12,11 @@ public class ScoreManager
 
     public boolean pause;
 
-    public static ScoreManager CreateScoreManager ()
+    public static ScoreManager CreateScoreManager (GameManager game_manager)
     {
         if (instance == null)
         {
-            instance = new ScoreManager();
+            instance = new ScoreManager(game_manager);
         }
 
         return instance;
@@ -26,11 +27,12 @@ public class ScoreManager
         return instance;
     }
 
-    private ScoreManager()
+    private ScoreManager(GameManager game_manager)
     {
-        score_powerup    = new ScorePowerup();
-        current_score    = 0;
-        pause            = true;
+        this.game_manager  = game_manager;
+        score_powerup      = new ScorePowerup();
+        current_score      = 0;
+        pause              = true;
     }
 
     public ScorePowerup getScorePowerup()
@@ -62,6 +64,32 @@ public class ScoreManager
     {
         this.obstacle = obstacle;
     }
+
+    public boolean UpdateScore()
+	{
+		boolean performed = false;
+		// Make sure there is the next obstacle in the objects container
+		if (!pause)
+		{
+			GameObject object = game_manager.getGameObject(game_manager.current_obstacle_idx);
+			if (object instanceof Obstacle)
+			{
+				// Acknowledge the current obstacle as the target score trigger.
+				setObstacle((Obstacle)game_manager.getGameObject(game_manager.current_obstacle_idx));
+				
+				ScoreManager scoreManager = ScoreManager.getInstance();
+
+				performed = scoreManager.PerformScore(scoreManager.score_powerup.getScoreMultiplier());
+				
+				if (performed)
+				{
+					scoreManager.pause = true;	// Wait until new obstacle object spawns.
+				}
+			}
+		}
+
+		return performed;
+	}
 
     public boolean PerformScore(int score_multiplier)
     {
