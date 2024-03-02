@@ -232,7 +232,6 @@ public class GameManager
 			}
 			background.Update();
 	
-			// TODO: Encapsulate those procedures to something like state manager.
 			boolean collides = this.physicsManager.CollisionCheck();
 			if (!collides)
 			{
