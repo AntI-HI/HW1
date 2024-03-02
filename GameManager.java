@@ -37,7 +37,7 @@ public class GameManager
 	private   ScoreManager     scoreManager;
 	private	  AnimationPane    animationPane;
 	private	  PhysicsManager   physicsManager;
-	public    InstanceSpawner  instanceSpawner;
+	public    ObjectSpawner    objectSpawner;
 	public    GameEventManager event_manager;
 
 	public int current_obstacle_idx = 1;
@@ -62,9 +62,9 @@ public class GameManager
 		try {
 			this.event_manager   = GameEventManager.CreateEventManager(this);
 			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
-			this.instanceSpawner = new InstanceSpawner(this);
-			instanceSpawner.CreatePlayer(player_posX, player_posY);
-			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)
+			this.objectSpawner = new ObjectSpawner(this);
+			objectSpawner.CreatePlayer(player_posX, player_posY);
+			Thread t1 = new Thread(this.objectSpawner);   // Using the constructor Thread(Runnable r)
 			t1.start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
