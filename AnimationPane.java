@@ -1,28 +1,23 @@
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class AnimationPane extends JPanel
 {
-    private GameManager handler;
+    private GameManager game_manager;
     private Graphics2D g2d;
     
     public AnimationPane(GameManager _handler)
     {
-        this.handler = _handler;
+        this.game_manager = _handler;
     }
 
     public AnimationPane(GameManager _handler, String background_img, int background_width, int background_height)
     {
-        this.handler = _handler;
+        this.game_manager = _handler;
     }
 
     public Graphics2D getGraphics2d()
@@ -45,18 +40,18 @@ public class AnimationPane extends JPanel
     {
         super.paintComponent(g);
 
-        Background background = this.handler.getBackground();
+        Background background = this.game_manager.getBackground();
         ArrayList<Integer> coords = background.getCoordinates();
         int xPos_cont = background.getXPosCont();
         
         g.drawImage(background.getBackgroundImage(), coords.get(0), coords.get(1), null);
         g.drawImage(background.getBackgroundImage(), xPos_cont, coords.get(1), null);
 
-        for (int i=0; i<this.handler.objects.size(); ++i)
+        for (int i=0; i<this.game_manager.getNumberOfGameObjects(); ++i)
         {
-            int _xPos = this.handler.objects.get(i).xPos;
-            int _yPos = this.handler.objects.get(i).yPos;
-            BufferedImage _img = this.handler.objects.get(i).img;
+            int _xPos = this.game_manager.getGameObject(i).xPos;
+            int _yPos = this.game_manager.getGameObject(i).yPos;
+            BufferedImage _img = this.game_manager.getGameObject(i).img;
 
             g.drawImage(_img, _xPos, _yPos, null);
         }
