@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -9,17 +8,12 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 public class GameManager
 {
 	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
-	protected boolean up = false, down = false, right = false, left = false;
-	protected final static double GRAVITY = 1f;
 
 	public static int player_posX	= 240;
 	public static int player_posY	= 550;
@@ -45,24 +39,24 @@ public class GameManager
 	
     public GameManager() throws IOException
 	{
-		DataPool.CreateDataPool();
-		scoreManager = ScoreManager.CreateScoreManager();
-
-		this.animationPane  = new AnimationPane(this);
-		this.background     = new Background();
 		
-		addPlayerSprite(Game.playerSprite, player_width, player_height, true);
-		addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
-		addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
-		addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
-    }
+	}
 	
 	private void Game_Manager_Early_Init()
 	{
 		try {
+			DataPool.CreateDataPool();
+			scoreManager = ScoreManager.CreateScoreManager();
+			
 			this.event_manager   = GameEventManager.CreateEventManager(this);
 			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
 			this.objectSpawner = new ObjectSpawner(this);
+			this.animationPane  = new AnimationPane(this);
+			this.background     = new Background();
+			addPlayerSprite(Game.playerSprite, player_width, player_height, true);
+			addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
+			addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
+			addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
 			objectSpawner.CreatePlayer(player_posX, player_posY);
 			Thread t1 = new Thread(this.objectSpawner);   // Using the constructor Thread(Runnable r)
 			t1.start();

@@ -4,8 +4,8 @@ public class PhysicsManager
 {
     private static PhysicsManager instance = null;
     private GameManager game_manager = null;
-    // private long current_time;
-    // private long last_update_time;
+
+	public final double GRAVITY = 1f;
 
     public boolean pause = true;
 
