@@ -32,14 +32,13 @@ public class GameManager
 	public static int powerup_width	  = 100;
 	public static int powerup_height  = 100;
 
-	private   Player 		  player;
-	private   Background 	  background;
-	private   ScoreManager    scoreManager;
-	private	  AnimationPane   animationPane;
-	private	  PhysicsManager  physicsManager;
-	public    ObjectSpawner instanceSpawner;
-	public    GameEventManager  event_manager;
-
+	private   Player 		   player;
+	private   Background 	   background;
+	private   ScoreManager     scoreManager;
+	private	  AnimationPane    animationPane;
+	private	  PhysicsManager   physicsManager;
+	public    InstanceSpawner  instanceSpawner;
+	public    GameEventManager event_manager;
 
 	private int current_obstacle_idx = 1;
 	public boolean new_spawned	= false;
@@ -65,8 +64,8 @@ public class GameManager
 			this.event_manager   = GameEventManager.CreateEventManager(this);
 			this.instanceSpawner = new ObjectSpawner(this);
 			instanceSpawner.CreatePlayer(player_posX, player_posY);
-			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)  
-		t1.start();
+			Thread t1 = new Thread(this.instanceSpawner);   // Using the constructor Thread(Runnable r)
+			t1.start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
