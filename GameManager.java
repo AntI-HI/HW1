@@ -232,13 +232,18 @@ public class GameManager
 			}
 			background.Update();
 	
-			boolean collides = this.physicsManager.CollisionCheck();
-			if (!collides)
-			{
-				scoreManager.UpdateScore();
-			}
-			object_selector();
+			Post_Update();
 		}
+	}
+	
+	private void Post_Update()
+	{
+		boolean collides = this.physicsManager.CollisionCheck();
+		if (!collides)
+		{
+			scoreManager.UpdateScore();
+		}
+		object_selector();
 	}
 
 	public void draw()
