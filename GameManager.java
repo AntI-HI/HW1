@@ -246,11 +246,6 @@ public class GameManager
 		object_selector();
 	}
 
-	public void draw()
-    {
-		animationPane.paint();
-	}
-
 	private void object_selector()
 	{
 		if (objects.size() > 1)
@@ -272,6 +267,11 @@ public class GameManager
 				}
 			}
 		}
+	}
+
+	public void draw()
+    {
+		animationPane.paint();
 	}
 
 	public void addObject(GameObject object)
