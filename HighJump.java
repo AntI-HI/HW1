@@ -4,10 +4,15 @@ public class HighJump implements JumpStrategy
     private final int speed = 25;
     private PhysicsManager physics_manager;
 
+    public static HighJump Create()
+    {
+        return new HighJump();
+    }
+
     public HighJump()
     {
         player = Player.getPlayerInstance();
-        player.set_initial_jump_speed(speed);
+        // player.set_initial_jump_speed(speed);
         physics_manager = PhysicsManager.getInstance();
     }
 
@@ -20,7 +25,7 @@ public class HighJump implements JumpStrategy
         {
             if (player.is_first_jump())
             {
-                player.set_curr_vertical_speed(player.get_initial_jump_speed());
+                player.set_curr_vertical_speed(speed);
                 player.set_first_jump(false);
             }
     

@@ -1,3 +1,6 @@
+import java.net.DatagramPacket;
+
+import javax.xml.crypto.Data;
 
 public class GameEventManager
 {
@@ -32,6 +35,9 @@ public class GameEventManager
         {
             game_manager.setPlayer((Player)obj);
             ScoreManager.getInstance().setPlayer((Player)obj);
+            DataPool dataPool = DataPool.getInstance();
+            dataPool.setHigh_jump(new HighJump());
+            dataPool.setLow_jump(new LowJump());
         }
         else
         {
@@ -43,6 +49,11 @@ public class GameEventManager
                 PhysicsManager.getInstance().pause = false; // Unpause the physics calculation functionality for the first obstacle spawn.
             }
         }
+    }
+
+    public void handle_jump_event(GameObject obj)
+    {
+        game_manager.getPlayer().setJumpStrategy(((JumpObject)obj).jump_strategy);
     }
 
 }

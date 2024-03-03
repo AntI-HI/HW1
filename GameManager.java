@@ -26,6 +26,12 @@ public class GameManager
 	public static int powerup_width	  = 100;
 	public static int powerup_height  = 100;
 
+	public static int high_jump_width  = 100;
+	public static int high_jump_height = 100;
+
+	public static int low_jump_width  = 100;
+	public static int low_jump_height = 100;
+
 	private   Player 		   player;
 	private   Background 	   background;
 	private   ScoreManager     scoreManager;
@@ -39,26 +45,29 @@ public class GameManager
 	
     public GameManager() throws IOException
 	{
-		
+		DataPool.CreateDataPool();
 	}
 	
 	private void Game_Manager_Early_Init()
 	{
 		try {
-			DataPool.CreateDataPool();
 			scoreManager = ScoreManager.CreateScoreManager(this);
 			
-			this.event_manager   = GameEventManager.CreateEventManager(this);
+			this.event_manager  = GameEventManager.CreateEventManager(this);
 			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
-			this.objectSpawner = new ObjectSpawner(this);
+			this.objectSpawner  = new ObjectSpawner(this);
 			this.animationPane  = new AnimationPane(this);
 			this.background     = new Background();
+
 			addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 			addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
 			addPowerupSprite(Game.powerupSprite, powerup_width, powerup_height, true);
 			addBackgroundSprite(Game.background_img, Game.window_width, Game.window_height);
+			addHighJumpSprite(Game.high_jump_sprite, high_jump_width, high_jump_height, true);
+			addLowJumpSprite(Game.low_jump_sprite, low_jump_width, low_jump_height, true);
+
 			objectSpawner.CreatePlayer(player_posX, player_posY);
-			Thread t1 = new Thread(this.objectSpawner);   // Using the constructor Thread(Runnable r)
+			Thread t1 = new Thread(this.objectSpawner);
 			t1.start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -203,6 +212,86 @@ public class GameManager
 					rgb = rgb & 0x00FFFFFF;
 					return rgb;
 				}
+				if ((rgb | 0xFF000000) == transparentColor)
+				{
+					return 0x00FFFFFF & rgb;
+				}
+				else
+				{
+					return rgb;
+				}
+			}
+		};
+
+		return filter;
+	}
+
+	public void addHighJumpSprite(String sprite,
+								int width,
+								int height,
+								boolean requires_filter) throws IOException
+	{
+		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+		if (requires_filter)
+		{
+			ImageFilter   filter 		  = filterTransparentForHighJump();
+			ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+			Image 		  transparentImg  = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+			img	= transparentImg;
+		}
+
+		DataPool.getInstance().setHighJumpSprite(img);
+	}
+
+	private ImageFilter filterTransparentForHighJump()
+	{
+		ImageFilter filter = new RGBImageFilter() 
+		{
+			int transparentColor = 0xFF000000;
+
+			public final int filterRGB(int x, int y, int rgb)
+			{
+				if ((rgb | 0xFF000000) == transparentColor)
+				{
+					return 0x00FFFFFF & rgb;
+				}
+				else
+				{
+					return rgb;
+				}
+			}
+		};
+
+		return filter;
+	}
+
+	public void addLowJumpSprite(String sprite,
+								int width,
+								int height,
+								boolean requires_filter) throws IOException
+	{
+		Image img = ImageIO.read(new File(sprite)).getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+		if (requires_filter)
+		{
+			ImageFilter   filter 		  = filterTransparentForLowJump();
+			ImageProducer filteredImgProd = new FilteredImageSource((img).getSource(), filter);
+			Image 		  transparentImg  = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+			img	= transparentImg;
+		}
+
+		DataPool.getInstance().setLowJumpSprite(img);
+	}
+
+	private ImageFilter filterTransparentForLowJump()
+	{
+		ImageFilter filter = new RGBImageFilter() 
+		{
+			int transparentColor = 0xFF000000;
+
+			public final int filterRGB(int x, int y, int rgb)
+			{
 				if ((rgb | 0xFF000000) == transparentColor)
 				{
 					return 0x00FFFFFF & rgb;

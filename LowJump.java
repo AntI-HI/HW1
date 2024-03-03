@@ -1,14 +1,18 @@
-public class LowJump implements JumpStrategy 
+public class LowJump implements JumpStrategy
 {
     private Player player;
     private final int speed = 18;
     private PhysicsManager physics_manager;
-    
+
+    public static LowJump Create()
+    {
+        return new LowJump();
+    }
 
     public LowJump()
     {
         player = Player.getPlayerInstance();
-        player.set_initial_jump_speed(speed);
+        // player.set_initial_jump_speed(speed);
         physics_manager = PhysicsManager.getInstance();
     }
 
@@ -21,7 +25,7 @@ public class LowJump implements JumpStrategy
         {
             if (player.is_first_jump())
             {
-                player.set_curr_vertical_speed(player.get_initial_jump_speed());
+                player.set_curr_vertical_speed(speed);
                 player.set_first_jump(false);
             }
     
@@ -53,4 +57,5 @@ public class LowJump implements JumpStrategy
             }
         }
     }
+    
 }
