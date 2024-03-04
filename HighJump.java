@@ -12,15 +12,12 @@ public class HighJump implements JumpStrategy
     public HighJump()
     {
         player = Player.getPlayerInstance();
-        // player.set_initial_jump_speed(speed);
         physics_manager = PhysicsManager.getInstance();
     }
 
     @Override
     public void Jump()
     {
-        // System.out.println("High Jump!");
-
         if (player.is_jumping())
         {
             if (player.is_first_jump())

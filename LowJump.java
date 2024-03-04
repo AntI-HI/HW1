@@ -12,15 +12,12 @@ public class LowJump implements JumpStrategy
     public LowJump()
     {
         player = Player.getPlayerInstance();
-        // player.set_initial_jump_speed(speed);
         physics_manager = PhysicsManager.getInstance();
     }
 
     @Override
     public void Jump()
-    {
-        // System.out.println("LOW JUMP");
-        
+    {        
         if (player.is_jumping())
         {
             if (player.is_first_jump())
