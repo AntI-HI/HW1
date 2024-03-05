@@ -1,7 +1,7 @@
 public class LowJump implements JumpStrategy
 {
     private Player player;
-    private final int speed = 18;
+    private final int jump_speed = 18;
     private PhysicsManager physics_manager;
 
     public static LowJump Create()
@@ -22,7 +22,7 @@ public class LowJump implements JumpStrategy
         {
             if (player.is_first_jump())
             {
-                player.set_curr_vertical_speed(speed);
+                player.set_curr_vertical_speed(jump_speed);
                 player.set_first_jump(false);
             }
     
@@ -55,4 +55,9 @@ public class LowJump implements JumpStrategy
         }
     }
     
+    @Override
+    public String toString()
+    {
+        return "Low Jump";
+    }
 }

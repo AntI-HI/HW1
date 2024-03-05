@@ -89,9 +89,9 @@ public class ObjectSpawner implements Runnable
         Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
         if (dataPool.getSpeed() > 0)
         {
-            GameObject strategy = JumpObject.Create(spawn_pos_x, spawn_pos_y, dataPool.getHigh_jump());
-            GameEventManager.getInstance().handle_jump_event(strategy);
-            game_manager.addObject(strategy);
+            GameObject object = JumpObject.Create(spawn_pos_x, spawn_pos_y, dataPool.getHigh_jump());
+            GameEventManager.getInstance().handle_event(object);
+            game_manager.addObject(object);
         }
     }
 
@@ -103,9 +103,9 @@ public class ObjectSpawner implements Runnable
         Thread.sleep(Math.abs(r.nextLong() % max_wait_ms)); // wait a random time up to 1 second
         if (dataPool.getSpeed() > 0)
         {
-            GameObject strategy = JumpObject.Create(spawn_pos_x, spawn_pos_y, dataPool.getLow_jump());
-            GameEventManager.getInstance().handle_jump_event(strategy);
-            game_manager.addObject(strategy);
+            GameObject object = JumpObject.Create(spawn_pos_x, spawn_pos_y, dataPool.getLow_jump());
+            GameEventManager.getInstance().handle_event(object);
+            game_manager.addObject(object);
         }
     }
 

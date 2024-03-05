@@ -8,13 +8,23 @@ public class JumpObject extends GameObject
     public static GameObject Create(int pos_x, int pos_y, JumpStrategy jumpStrategy)
     {
         DataPool   dataPool = DataPool.getInstance();
-		Image 	   img      = dataPool.getObstacleSprite();
+        Image img;
 		GameObject object;
         int        width;
         int        height;
+        
+        if (jumpStrategy instanceof HighJump)
+        {
+            img = dataPool.getHighJumpSprite();
+        }
+        else
+        {
+            img = dataPool.getLowJumpSprite();
+        }
 
         width  = img.getWidth(null);
         height = img.getHeight(null);
+
         object = new JumpObject(pos_x, pos_y, width, height, jumpStrategy);
         
         return object;

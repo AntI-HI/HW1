@@ -40,9 +40,13 @@ public class PhysicsManager
             {
                 System.out.println("Collided with obstacle");
             }
-            else
+            else if (target instanceof Powerup)
             {
-                System.out.println("Collided with powerup");
+                System.out.println("Collided with score powerup");
+            }
+            else if (target instanceof JumpObject)
+            {
+                System.out.println(((JumpObject)target).jump_strategy.toString());
             }
         }
         // TODO: Think about using event management properly. Maybe creating a new class named Event Manager.
@@ -71,6 +75,10 @@ public class PhysicsManager
 				{
 					player.handle_powerup((Powerup)object);
 				}
+                else if (object instanceof JumpObject)
+                {
+                    player.setJumpStrategy(((JumpObject)object).jump_strategy);
+                }
 				pause = true; // Collision check only occurs once for every obstacle
 			}
 		}

@@ -47,9 +47,5 @@ public class GameEventManager
         }
     }
 
-    public void handle_jump_event(GameObject obj)
-    {
-        game_manager.getPlayer().setJumpStrategy(((JumpObject)obj).jump_strategy);
-    }
 
 }
