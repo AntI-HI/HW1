@@ -40,6 +40,8 @@ public class GameManager
 	public    ObjectSpawner    objectSpawner;
 	public    GameEventManager event_manager;
 
+	private UI_Elements ui;
+
 	public int current_obstacle_idx = 1;
 	public boolean new_spawned	= false;
 	
@@ -58,6 +60,7 @@ public class GameManager
 			this.objectSpawner  = new ObjectSpawner(this);
 			this.animationPane  = new AnimationPane(this);
 			this.background     = new Background();
+			this.ui 			= new UI_Elements(animationPane);
 
 			addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 			addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
@@ -375,12 +378,17 @@ public class GameManager
 
 	public Background getBackground()
 	{
-		return this.background;
+		return background;
 	}
 
 	public Player getPlayer()
 	{
-		return this.player;
+		return player;
+	}
+
+	public UI_Elements getUi_Elements()
+	{
+		return ui;
 	}
 
 	public AnimationPane getAnimationPane()

@@ -95,8 +95,9 @@ public class ScoreManager
     {
         if (!obstacle.collides && player.xPos > obstacle.xPos + obstacle.width)
         {
+            UI_Elements ui = game_manager.getUi_Elements();
             current_score = current_score + score_multiplier;
-            System.out.printf("Score: %d\n", current_score);
+            ui.updateScoreLabel("score: " + current_score);
             return true;
         }
         else

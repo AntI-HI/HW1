@@ -1,6 +1,12 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import java.io.IOException;
 
 
@@ -28,7 +34,9 @@ public class Game extends JFrame implements Runnable
 	public static final int window_width  = 1280;
 	public static final int window_height = 720;
 
-	private static  Game frame		   = null;
+	private static Game   frame		   = null;
+	private static JPanel mainPanel	   = null;
+	private static UI_Elements   ui = null;
 	private static int  instance_count = 0;
 
 	public static double delta = 0;
@@ -38,10 +46,11 @@ public class Game extends JFrame implements Runnable
 		Create_Game_Instance();
 		Create_Game_Manager();
 		Set_Up_Frame();
+		Set_Up_UI_Elements();
 
 		frame.Start();
     }
-	
+
 	private void Start()
 	{
 		InputManager input_manager = new InputManager(game_manager);
@@ -64,15 +73,27 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 
+	private static void Set_Up_UI_Elements()
+	{
+		ui = game_manager.getUi_Elements();
+		ui.initScoreLabel();
+		ui.initEventLabel();
+		ui.initButtons();
+
+		frame.setVisible(true);
+	}
+
 	private static void Set_Up_Frame()
 	{
 		if (frame != null)
 		{
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setLayout(new BorderLayout());
+			mainPanel = game_manager.getAnimationPane();
 
-			frame.add(game_manager.getAnimationPane());
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setPreferredSize(new Dimension(window_width, window_height));
+
+			frame.getContentPane().add(mainPanel);
+			
 			frame.pack();
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
