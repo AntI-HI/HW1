@@ -60,7 +60,7 @@ public class GameManager
 			this.objectSpawner  = new ObjectSpawner(this);
 			this.animationPane  = new AnimationPane(this);
 			this.background     = new Background();
-			this.ui 			= new UI_Elements(animationPane);
+			this.ui 			= new UI_Elements(Game.getFrame(), animationPane);
 
 			addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 			addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);

@@ -79,8 +79,6 @@ public class Game extends JFrame implements Runnable
 		ui.initScoreLabel();
 		ui.initEventLabel();
 		ui.initButtons();
-
-		frame.setVisible(true);
 	}
 
 	private static void Set_Up_Frame()
@@ -112,6 +110,11 @@ public class Game extends JFrame implements Runnable
 		{
 			return Game.frame;
 		}
+	}
+
+	public static JFrame getFrame()
+	{
+		return frame;
 	}
 
 	public Game()
@@ -156,7 +159,7 @@ public class Game extends JFrame implements Runnable
 		stop();
 	}
 
-	public void stop()
+	public static void stop()
 	{
 		System.exit(0);
 	}

@@ -97,7 +97,7 @@ public class ScoreManager
         {
             UI_Elements ui = game_manager.getUi_Elements();
             current_score = current_score + score_multiplier;
-            ui.updateScoreLabel("score: " + current_score);
+            ui.updateScoreLabel("Score: " + current_score);
             return true;
         }
         else
