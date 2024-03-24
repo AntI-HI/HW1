@@ -11,33 +11,39 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 public class UI_Elements implements ActionListener
 {
-    private JFrame main_frame;
     private JPanel main_panel;
 
     private JLabel  scoreLabel;
     private JLabel  eventLabel;
+    private JLabel  pauseLabel;
+
     private JButton exitButton;
     private JButton pauseButton;
     private JButton startButton;
 
 
-    public UI_Elements(JFrame frame, JPanel panel)
+    public UI_Elements(JPanel panel)
     {
-        main_frame = frame;
         main_panel = panel;
     }
 
     public void initButtons()
     {
-        main_frame = Game.getFrame();
+        initExitButton();
+        initPauseButton();
+    }
 
+    private void initExitButton()
+    {
         main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
 
         exitButton = new JButton();
-		exitButton.setBounds(1200, 20, 50, 40);
+		exitButton.setBounds(1180, 20, 80, 40);
 		exitButton.addActionListener(this);
 		exitButton.setText("EXIT!");
 
@@ -46,8 +52,26 @@ public class UI_Elements implements ActionListener
 		exitButton.setForeground(Color.red);
 		exitButton.setBackground(Color.lightGray);
 		exitButton.setBorder(BorderFactory.createEtchedBorder());
-        
+
         main_panel.add(exitButton);
+    }
+
+    private void initPauseButton()
+    {
+        main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
+
+        pauseButton = new JButton();
+		pauseButton.setBounds(1180, 60, 80, 40);
+		pauseButton.addActionListener(this);
+		pauseButton.setText("PAUSE!");
+
+        pauseButton.setFocusable(false);
+		pauseButton.setFont(new Font("Comic Sans",Font.BOLD,15));
+		pauseButton.setForeground(Color.blue);
+		pauseButton.setBackground(Color.lightGray);
+		pauseButton.setBorder(BorderFactory.createEtchedBorder());
+
+        main_panel.add(pauseButton);
     }
 
     public void initEventLabel()
@@ -55,7 +79,14 @@ public class UI_Elements implements ActionListener
 
     }
 
-    public void initScoreLabel()
+    public void initLabels()
+    {
+        initScoreLabel();
+        initPauseLabel();
+        initEventLabel();
+    }
+
+    private void initScoreLabel()
     {
         main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
 		scoreLabel = new JLabel("Score: 0");
@@ -77,13 +108,50 @@ public class UI_Elements implements ActionListener
         scoreLabel.setText(message);
     }
 
+    private void initPauseLabel()
+    {
+		pauseLabel = new JLabel("PAUSED");
+		pauseLabel.setBounds(440, 320, 1000, 100);
+
+        pauseLabel.setHorizontalTextPosition(JButton.CENTER);
+		pauseLabel.setVerticalTextPosition(JButton.BOTTOM);
+		pauseLabel.setFont(new Font("Comic Sans",Font.BOLD,100));
+        pauseLabel.setForeground(Color.orange);
+		pauseLabel.setBackground(Color.lightGray);
+        
+        pauseLabel.setVisible(false);
+        
+        main_panel.add(pauseLabel);
+    }
+
+    private void ShowPauseLabel()
+    {
+        main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
+
+        if(!pauseLabel.isVisible())
+        {
+            pauseButton.setText("RESUME");
+            pauseLabel.setVisible(true);
+        }
+        else
+        {
+            pauseButton.setText("PAUSE");
+            pauseLabel.setVisible(false);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if(e.getSource()==exitButton)
+        if(e.getSource() == exitButton)
         {
             Game.stop();
 		}
+        else if (e.getSource() == pauseButton)
+        {
+            GameEventManager.getInstance().PauseGame();
+            ShowPauseLabel();
+        }
     }
 
 }

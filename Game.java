@@ -76,8 +76,7 @@ public class Game extends JFrame implements Runnable
 	private static void Set_Up_UI_Elements()
 	{
 		ui = game_manager.getUi_Elements();
-		ui.initScoreLabel();
-		ui.initEventLabel();
+		ui.initLabels();
 		ui.initButtons();
 	}
 

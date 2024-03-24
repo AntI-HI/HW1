@@ -47,5 +47,9 @@ public class GameEventManager
         }
     }
 
+    public void PauseGame()
+    {
+        game_manager.pause_game();
+    }
 
 }

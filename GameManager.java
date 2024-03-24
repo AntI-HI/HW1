@@ -44,6 +44,8 @@ public class GameManager
 
 	public int current_obstacle_idx = 1;
 	public boolean new_spawned	= false;
+
+	private boolean paused;
 	
     public GameManager() throws IOException
 	{
@@ -60,7 +62,7 @@ public class GameManager
 			this.objectSpawner  = new ObjectSpawner(this);
 			this.animationPane  = new AnimationPane(this);
 			this.background     = new Background();
-			this.ui 			= new UI_Elements(Game.getFrame(), animationPane);
+			this.ui 			= new UI_Elements(animationPane);
 
 			addPlayerSprite(Game.playerSprite, player_width, player_height, true);
 			addObstacleSprite(Game.obstacleSprite, obstacle_width, obstacle_height, true);
@@ -316,7 +318,7 @@ public class GameManager
 
 	public void Update()
     {
-		if (player.getPlayerHealth() > 0)
+		if (player.getPlayerHealth() > 0 && !paused)
 		{
 			for(int i = 0; i < objects.size(); i++)
 			{
@@ -414,5 +416,10 @@ public class GameManager
 	public int getNumberOfGameObjects()
 	{
 		return objects.size();
+	}
+
+	public void pause_game()
+	{
+		paused = !paused;
 	}
 }
