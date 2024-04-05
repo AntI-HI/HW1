@@ -109,9 +109,9 @@ public class ObjectSpawner implements Runnable
         }
     }
 
-    public void CreatePlayer(int pos_x, int pos_y) throws InterruptedException, IOException
+    public void CreatePlayer(UI_Elements ui, int pos_x, int pos_y) throws InterruptedException, IOException
     {
-        GameObject player = Player.Create(pos_x, pos_y);
+        GameObject player = Player.Create(ui, pos_x, pos_y);
         GameEventManager.getInstance().handle_event(player);
         game_manager.addObject(player);
     }

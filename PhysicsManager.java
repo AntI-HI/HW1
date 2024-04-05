@@ -31,6 +31,9 @@ public class PhysicsManager
     public boolean isCollide(GameObject source, GameObject target)
     {
         boolean is_collide = false;
+        String message = "Unrecognized message";
+
+        UI_Elements ui = game_manager.getUi_Elements();
 
         if(source.getBounds().intersects(target.hitbox)) 
         {
@@ -38,18 +41,19 @@ public class PhysicsManager
             target.collides = true;
             if (target instanceof Obstacle)
             {
-                System.out.println("Collided with obstacle");
+                message = "Collided with obstacle";
             }
             else if (target instanceof Powerup)
             {
-                System.out.println("Collided with score powerup");
+                message = "Collided with score powerup";
             }
             else if (target instanceof JumpObject)
             {
-                System.out.println(((JumpObject)target).jump_strategy.toString());
+                message = "Obtained " + ((JumpObject)target).jump_strategy.toString() + " ability";
             }
+
+            ui.updateEventLabel(message);
         }
-        // TODO: Think about using event management properly. Maybe creating a new class named Event Manager.
         source.set_event(is_collide);   
 
         return is_collide;

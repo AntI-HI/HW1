@@ -71,7 +71,7 @@ public class GameManager
 			addHighJumpSprite(Game.high_jump_sprite, high_jump_width, high_jump_height, true);
 			addLowJumpSprite(Game.low_jump_sprite, low_jump_width, low_jump_height, true);
 
-			objectSpawner.CreatePlayer(player_posX, player_posY);
+			objectSpawner.CreatePlayer(ui, player_posX, player_posY);
 			Thread t1 = new Thread(this.objectSpawner);
 			t1.start();
 		} catch (InterruptedException e) {

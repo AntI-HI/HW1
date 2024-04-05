@@ -76,7 +76,18 @@ public class UI_Elements implements ActionListener
 
     public void initEventLabel()
     {
+        eventLabel = new JLabel("Nothing");
+		eventLabel.setBounds(440, 20, 300, 50);
 
+        eventLabel.setHorizontalTextPosition(JButton.CENTER);
+		eventLabel.setVerticalTextPosition(JButton.BOTTOM);
+		eventLabel.setFont(new Font("Comic Sans",Font.BOLD,20));
+        eventLabel.setForeground(Color.green);
+		eventLabel.setBackground(Color.lightGray);
+        
+        eventLabel.setVisible(false);
+        
+        main_panel.add(eventLabel);
     }
 
     public void initLabels()
@@ -106,6 +117,14 @@ public class UI_Elements implements ActionListener
         main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
         
         scoreLabel.setText(message);
+    }
+
+    public void updateEventLabel(String message)
+    {
+        main_panel.setLayout(new BorderLayout()); // Setting BorderLayout for the main panel
+
+        eventLabel.setText(message);
+        eventLabel.setVisible(true);
     }
 
     private void initPauseLabel()

@@ -4,6 +4,7 @@ import java.awt.Image;
 public class Player extends GameObject
 {
     private JumpStrategy jump_strategy;
+    private UI_Elements  ui;
 
     private int     initial_jump_speed;
     private int     curr_vertical_speed;
@@ -18,28 +19,28 @@ public class Player extends GameObject
 
     public static Player player_instance = null;
 
-    public static Player Create(int _xPos, int _yPos)
+    public static Player Create(UI_Elements ui, int _xPos, int _yPos)
     {
         if (player_instance == null)
         {
             DataPool   dataPool = DataPool.getInstance();
 	    	Image 	   img      = dataPool.getPlayerSprite();
-            player_instance = new Player(_xPos, _yPos, img.getWidth(null), img.getHeight(null));
+            player_instance = new Player(ui, _xPos, _yPos, img.getWidth(null), img.getHeight(null));
             player_instance.jump_strategy = new LowJump();
         }
-
+        
         return player_instance;
     }
-
+    
     public static Player getPlayerInstance()
     {
         return player_instance;
     }
-
-    private Player(int _xPos, int _yPos, int width, int height)
+    
+    private Player(UI_Elements ui, int _xPos, int _yPos, int width, int height)
     {
         super(_xPos, _yPos, width, height);
-
+        this.ui = ui;
         Graphics2D g2d = img.createGraphics();
         g2d.drawImage(dataPool.getPlayerSprite(), 0, 0, null);
         g2d.dispose();
@@ -85,6 +86,7 @@ public class Player extends GameObject
     public void Die()
     {
         this.is_dead = true;
+        ui.updateEventLabel("You Died!");
     }
 
     public int getPlayerSpeed()
@@ -193,8 +195,7 @@ public class Player extends GameObject
         }
         if (player_health == 0)
         {
-            System.out.println("You Died!");
-
+            Die();
         }
     }
 }

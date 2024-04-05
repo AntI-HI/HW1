@@ -33,10 +33,7 @@ public class DataPool
     
     private DataPool()
     {
-        // Player player = Player.getPlayerInstance();
         speed = 0;
-        // high_jump = new HighJump();
-        // low_jump  = new LowJump();
     }
     
     public HighJump getHigh_jump() {
