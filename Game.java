@@ -1,20 +1,12 @@
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import java.io.IOException;
-
 
 public class Game extends JFrame implements Runnable
 {
-	// private static final long serialVersionUID = 1L;
-	protected final static int GWIDTH 	= 1280;	/*(int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*/
-	protected final static int GHEIGHT 	= 720;	/*(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*/
+	protected final static int GWIDTH 	= 1280;
+	protected final static int GHEIGHT 	= 720;
 	protected final static int SCALE 	= 72;
 
 	protected final static double amountOfTicks = 60.0;
