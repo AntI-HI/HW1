@@ -1,12 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-enum ObjectTypes
-{
-	PLAYER,
-	OBSTACLE, POWERUP
-}
-
 public abstract class GameObject /* extends JPanel */
 {
 	protected int xPos, yPos, width, height;
@@ -20,6 +14,8 @@ public abstract class GameObject /* extends JPanel */
 	protected DataPool dataPool;
 
 	protected boolean collides = false;
+
+	public boolean isActive = false;
 
 	public GameObject(){}
 
@@ -102,9 +98,37 @@ public abstract class GameObject /* extends JPanel */
 	{
 		img = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
 	}
+
+	protected void DeactivateObject()
+	{
+		GameManager game_manager = GameManager.getInstance();
+
+		setPosition(ObjectSelector.spawn_pos_x, ObjectSelector.spawn_pos_y);
+		game_manager.removeActiveObject(this);
+		game_manager.addDeactiveObject(this);
+	}
+
+	protected boolean isObjectOutsideScreen()
+	{
+		if (xPos + width < 0)
+		{
+			return true;
+		}
+		return false;
+	}
 	
-	public abstract void update();
-	
+
+	public void update()
+    {
+        int playerSpeed = dataPool.getSpeed();
+        xPos -= playerSpeed;
+        hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
+
+        if (isObjectOutsideScreen())
+        {
+            DeactivateObject();
+        }
+    }	
 	
 	/* TODO: Try to perform drawing procedures for individual Game Object inside the Game Object class methods 
 	and seperate the drawing process for AnimationPane. */

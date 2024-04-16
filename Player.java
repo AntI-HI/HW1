@@ -19,13 +19,13 @@ public class Player extends GameObject
 
     public static Player player_instance = null;
 
-    public static Player Create(UI_Elements ui, int _xPos, int _yPos)
+    public static Player Create(int _xPos, int _yPos)
     {
         if (player_instance == null)
         {
             DataPool   dataPool = DataPool.getInstance();
 	    	Image 	   img      = dataPool.getPlayerSprite();
-            player_instance = new Player(ui, _xPos, _yPos, img.getWidth(null), img.getHeight(null));
+            player_instance = new Player(_xPos, _yPos, img.getWidth(null), img.getHeight(null));
             player_instance.jump_strategy = new LowJump();
         }
         
@@ -37,10 +37,10 @@ public class Player extends GameObject
         return player_instance;
     }
     
-    private Player(UI_Elements ui, int _xPos, int _yPos, int width, int height)
+    private Player(int _xPos, int _yPos, int width, int height)
     {
         super(_xPos, _yPos, width, height);
-        this.ui = ui;
+        this.ui = GameManager.getInstance().getUi_Elements();
         Graphics2D g2d = img.createGraphics();
         g2d.drawImage(dataPool.getPlayerSprite(), 0, 0, null);
         g2d.dispose();

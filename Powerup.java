@@ -56,14 +56,6 @@ public class Powerup extends GameObject
         }
     }
 
-    @Override
-    public void update()
-    {
-        int playerSpeed = dataPool.getSpeed();
-        xPos -= playerSpeed;
-        hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
-    }
-
     public static GameObject Create(int pos_x, int pos_y)
     {
         DataPool   dataPool = DataPool.getInstance();

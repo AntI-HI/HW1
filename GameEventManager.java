@@ -38,18 +38,12 @@ public class GameEventManager
         else
         {
             game_manager.new_spawned = true;
-            int num_of_objects = game_manager.getNumberOfGameObjects();
-            if (num_of_objects == 1)
-            {
-                ScoreManager.getInstance().pause = false; // Unpause the score calculation functionality for the first obstacle spawn.
-                PhysicsManager.getInstance().pause = false; // Unpause the physics calculation functionality for the first obstacle spawn.
-            }
         }
+        obj.isActive = true;
     }
 
     public void PauseGame()
     {
         game_manager.pause_game();
     }
-
 }

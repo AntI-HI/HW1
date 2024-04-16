@@ -5,7 +5,7 @@ public class PhysicsManager
 
 	public final double GRAVITY = 1f;
 
-    public boolean pause = true;
+    public boolean pause = false;
 
     public static PhysicsManager CreatePhysicsManagerInstance(GameManager game_manager)
     {
@@ -61,28 +61,47 @@ public class PhysicsManager
     {
         boolean collides = false;
         Player player = game_manager.getPlayer();
+        ScoreManager scoreManager = ScoreManager.getInstance();
 
         if (!pause)
 		{
-			GameObject object = game_manager.getGameObject(game_manager.current_obstacle_idx);
-			collides = isCollide(player, object);
-			
-			if (collides)
-			{
-				if (object instanceof Obstacle)
-				{
-					player.handle_clash((Obstacle)object);
-				}
-				else if (object instanceof Powerup)
-				{
-					player.handle_powerup((Powerup)object);
-				}
-                else if (object instanceof JumpObject)
+            for (GameObject object : game_manager.getActiveGameObjects())
+            {
+                if (object instanceof Player)
                 {
-                    player.setJumpStrategy(((JumpObject)object).jump_strategy);
+                    continue;
                 }
-				pause = true; // Collision check only occurs once for every obstacle
-			}
+                if (object.isActive)
+                {
+                    collides = isCollide(player, object);
+                    
+                    if (collides)
+                    {
+                        if (object instanceof Obstacle)
+                        {
+                            player.handle_clash((Obstacle)object);
+                        }
+                        else if (object instanceof Powerup)
+                        {
+                            player.handle_powerup((Powerup)object);
+                        }
+                        else if (object instanceof JumpObject)
+                        {
+                            player.setJumpStrategy(((JumpObject)object).jump_strategy);
+                        }
+                        object.isActive = false;
+                        break;
+                    }
+                    else
+                    {
+                        if (object instanceof Obstacle)
+                        {
+                            scoreManager.setObstacle((Obstacle)object);
+                            scoreManager.UpdateScore();
+                        }
+                    }
+                }
+            }
 		}
 
         return collides;

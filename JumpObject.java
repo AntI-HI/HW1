@@ -46,12 +46,4 @@ public class JumpObject extends GameObject
         }
         g2d.dispose();
     }
-
-    @Override
-    public void update()
-    {
-        int playerSpeed = dataPool.getSpeed();
-        xPos -= playerSpeed;
-        hitbox.setBounds((int)(xPos), (int)(yPos), (int)(width),(int)(height));
-    }
 }

@@ -13,7 +13,8 @@ import javax.imageio.ImageIO;
 
 public class GameManager
 {
-	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
+	private LinkedList<GameObject> deactiveObjects = new LinkedList<GameObject>();
+	private LinkedList<GameObject> activeObjects = new LinkedList<GameObject>();
 
 	public static int player_posX	= 240;
 	public static int player_posY	= 550;
@@ -34,10 +35,11 @@ public class GameManager
 
 	private   Player 		   player;
 	private   Background 	   background;
-	private   ScoreManager     scoreManager;
+	public    ScoreManager     scoreManager;
 	private	  AnimationPane    animationPane;
-	private	  PhysicsManager   physicsManager;
-	public    ObjectSpawner    objectSpawner;
+	public	  PhysicsManager   physicsManager;
+	public    ObjectSelector   objectSelector;
+	private   ObjectFactory	   objectFactory;
 	public    GameEventManager event_manager;
 
 	private UI_Elements ui;
@@ -47,9 +49,18 @@ public class GameManager
 
 	private boolean paused;
 	
+
+	private static GameManager instance = null;
+
+	public static GameManager getInstance()
+	{
+		return instance;
+	}
+
     public GameManager() throws IOException
 	{
 		DataPool.CreateDataPool();
+		instance = this;
 	}
 	
 	private void Game_Manager_Early_Init()
@@ -59,7 +70,8 @@ public class GameManager
 			
 			this.event_manager  = GameEventManager.CreateEventManager(this);
 			this.physicsManager = PhysicsManager.CreatePhysicsManagerInstance(this);
-			this.objectSpawner  = new ObjectSpawner(this);
+			this.objectSelector = new ObjectSelector(this);
+			this.objectFactory	= new ObjectFactory(this);
 			this.animationPane  = new AnimationPane(this);
 			this.background     = new Background();
 			this.ui 			= new UI_Elements(animationPane);
@@ -71,12 +83,17 @@ public class GameManager
 			addHighJumpSprite(Game.high_jump_sprite, high_jump_width, high_jump_height, true);
 			addLowJumpSprite(Game.low_jump_sprite, low_jump_width, low_jump_height, true);
 
-			objectSpawner.CreatePlayer(ui, player_posX, player_posY);
-			Thread t1 = new Thread(this.objectSpawner);
+			// objectSpawner.CreatePlayer();
+			objectFactory.fillObjectPool();
+
+			Thread t1 = new Thread(this.objectSelector);
 			t1.start();
-		} catch (InterruptedException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -320,62 +337,23 @@ public class GameManager
     {
 		if (player.getPlayerHealth() > 0 && !paused)
 		{
-			for(int i = 0; i < objects.size(); i++)
+			for(int i = 0; i < activeObjects.size(); i++)
 			{
-				objects.get(i).update();
+				activeObjects.get(i).update();
 			}
-			background.Update();
-	
 			Post_Update();
 		}
 	}
 	
 	private void Post_Update()
 	{
-		boolean collides = this.physicsManager.CollisionCheck();
-		if (!collides)
-		{
-			scoreManager.UpdateScore();
-		}
-		object_selector();
-	}
-
-	private void object_selector()
-	{
-		if (objects.size() > 1)
-		{
-			GameObject obstacle = objects.get(current_obstacle_idx);
-			if (player.xPos > obstacle.xPos + obstacle.width && new_spawned)
-			{
-				if ((current_obstacle_idx < objects.size() - 1))
-				{
-					current_obstacle_idx++;
-					scoreManager.pause = false;
-					physicsManager.pause = false;
-				}
-				else
-				{
-					scoreManager.pause = true;
-					physicsManager.pause = true;
-					new_spawned = false;
-				}
-			}
-		}
+		background.Update();
+		physicsManager.CollisionCheck();
 	}
 
 	public void draw()
     {
 		animationPane.paint();
-	}
-
-	public void addObject(GameObject object)
-	{
-		objects.add(object);
-	}
-
-	public GameObject getGameObject(int idx)
-	{
-		return objects.get(idx);
 	}
 
 	public Background getBackground()
@@ -407,19 +385,54 @@ public class GameManager
 	{
 		this.player = (Player)gameObject;
 	}
-	
-	public void removeObject(GameObject tempObject)
-	{
-		objects.remove(tempObject);
-	}
-
-	public int getNumberOfGameObjects()
-	{
-		return objects.size();
-	}
 
 	public void pause_game()
 	{
 		paused = !paused;
+	}
+
+	public void addActiveObject(GameObject object)
+	{
+		activeObjects.add(object);
+	}
+
+	public void removeActiveObject(GameObject object)
+	{
+		activeObjects.remove(object);
+	}
+
+	public void addDeactiveObject(GameObject object)
+	{
+		deactiveObjects.add(object);
+	}
+
+	public void removeDeactiveObject(GameObject object)
+	{
+		deactiveObjects.remove(object);
+	}
+
+	public int getNumberOfGameDeactiveObjects()
+	{
+		return deactiveObjects.size();
+	}
+
+	public int getNumberOfGameActiveObjects()
+	{
+		return activeObjects.size();
+	}
+
+	public GameObject getDeactiveObject(int i)
+	{
+		return deactiveObjects.get(i);
+	}
+
+	public GameObject getActiveObject(int i)
+	{
+		return activeObjects.get(i);
+	}
+
+	public LinkedList<GameObject> getActiveGameObjects()
+	{
+		return activeObjects;
 	}
 }

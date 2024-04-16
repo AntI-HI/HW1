@@ -47,11 +47,11 @@ public class AnimationPane extends JPanel
         g.drawImage(background.getBackgroundImage(), coords.get(0), coords.get(1), null);
         g.drawImage(background.getBackgroundImage(), xPos_cont, coords.get(1), null);
 
-        for (int i=0; i<this.game_manager.getNumberOfGameObjects(); ++i)
+        for (int i=0; i<this.game_manager.getNumberOfGameActiveObjects(); ++i)
         {
-            int _xPos = this.game_manager.getGameObject(i).xPos;
-            int _yPos = this.game_manager.getGameObject(i).yPos;
-            BufferedImage _img = this.game_manager.getGameObject(i).img;
+            int _xPos = this.game_manager.getActiveObject(i).xPos;
+            int _yPos = this.game_manager.getActiveObject(i).yPos;
+            BufferedImage _img = this.game_manager.getActiveObject(i).img;
 
             g.drawImage(_img, _xPos, _yPos, null);
         }
