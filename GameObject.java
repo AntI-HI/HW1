@@ -104,6 +104,7 @@ public abstract class GameObject /* extends JPanel */
 		GameManager game_manager = GameManager.getInstance();
 
 		setPosition(ObjectSelector.spawn_pos_x, ObjectSelector.spawn_pos_y);
+		isActive = false;
 		game_manager.removeActiveObject(this);
 		game_manager.addDeactiveObject(this);
 	}

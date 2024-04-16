@@ -35,10 +35,7 @@ public class GameEventManager
             dataPool.setHigh_jump(new HighJump());
             dataPool.setLow_jump(new LowJump());
         }
-        else
-        {
-            game_manager.new_spawned = true;
-        }
+
         obj.isActive = true;
     }
 

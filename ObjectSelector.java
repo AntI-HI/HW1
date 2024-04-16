@@ -76,7 +76,6 @@ public class ObjectSelector implements Runnable
                     {
                         jumpObject.setPosition(start_pos_x, start_pos_y);
                         GameEventManager.getInstance().handle_event(jumpObject);
-                        
                         game_manager.removeDeactiveObject(jumpObject);
                         game_manager.addActiveObject(jumpObject);
                         break;
@@ -103,7 +102,6 @@ public class ObjectSelector implements Runnable
                     {
                         jumpObject.setPosition(start_pos_x, start_pos_y);
                         GameEventManager.getInstance().handle_event(jumpObject);
-
                         game_manager.removeDeactiveObject(jumpObject);
                         game_manager.addActiveObject(jumpObject);
                         break;
@@ -128,7 +126,6 @@ public class ObjectSelector implements Runnable
                     Powerup powerup = (Powerup)game_manager.getDeactiveObject(i);
                     powerup.setPosition(start_pos_x, start_pos_y);
                     GameEventManager.getInstance().handle_event(powerup);
-
                     game_manager.removeDeactiveObject(powerup);
                     game_manager.addActiveObject(powerup);
                     break;

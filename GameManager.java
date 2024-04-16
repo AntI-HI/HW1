@@ -45,7 +45,6 @@ public class GameManager
 	private UI_Elements ui;
 
 	public int current_obstacle_idx = 1;
-	public boolean new_spawned	= false;
 
 	private boolean paused;
 	
