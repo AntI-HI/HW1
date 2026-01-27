@@ -75,7 +75,7 @@ public class Game extends JFrame implements Runnable
 	{
 		try
 		{
-			game_manager = new GameManager();
+			game_manager = GameManager.CreateGameManager();
 			game_manager.Start();
 		}
 		catch (IOException e)
