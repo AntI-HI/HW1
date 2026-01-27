@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Utility class for loading image files from disk.
+ * Handles image I/O operations and error handling.
+ */
 public class BufferedImageLoader {
 	
 	private BufferedImage image;

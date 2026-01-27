@@ -9,6 +9,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Manages all UI elements including labels and buttons.
+ * Displays score, game events, pause status, and provides exit/pause controls.
+ * Implements ActionListener to handle button click events.
+ */
 public class UI_Elements implements ActionListener
 {
     private JPanel main_panel;

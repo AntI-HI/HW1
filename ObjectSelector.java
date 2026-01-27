@@ -1,6 +1,11 @@
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * Spawns game objects at random intervals during gameplay.
+ * Implements Runnable to spawn objects on a separate thread.
+ * Randomly selects between obstacles, powerups, and jump abilities to spawn.
+ */
 public class ObjectSelector implements Runnable
 {
     private GameManager game_manager;

@@ -1,3 +1,8 @@
+/**
+ * Implements a low jump strategy with standard jump height.
+ * Uses a lower jump speed constant (18) compared to HighJump (25).
+ * Follows the Strategy design pattern for interchangeable jump behaviors.
+ */
 public class LowJump implements JumpStrategy
 {
     private Player player;

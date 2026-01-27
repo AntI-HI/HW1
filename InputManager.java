@@ -1,6 +1,10 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Handles player input from the keyboard.
+ * Implements KeyListener to respond to arrow key presses for movement and jumping.
+ */
 public class InputManager implements KeyListener
 {
     private GameManager game_manager;

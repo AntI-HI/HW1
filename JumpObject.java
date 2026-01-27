@@ -1,6 +1,10 @@
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+/**
+ * Represents a jump powerup object (High Jump or Low Jump) that the player can collect.
+ * Extends GameObject and contains a jump strategy that can be applied to the player.
+ */
 public class JumpObject extends GameObject 
 {
     public JumpStrategy jump_strategy;

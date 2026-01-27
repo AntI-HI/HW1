@@ -1,3 +1,7 @@
+/**
+ * Decorator class that applies a 5x score multiplier to a powerup.
+ * Extends ScorePowerupDecorator and follows the Decorator design pattern.
+ */
 public class X5Powerup extends ScorePowerupDecorator
 {
     public X5Powerup(ScorePowerup powerup)

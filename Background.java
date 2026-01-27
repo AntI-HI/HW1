@@ -2,6 +2,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * Manages the game background image and its scrolling animation.
+ * Handles continuous horizontal scrolling by tracking two background positions.
+ */
 public class Background
 {
     private BufferedImage img;

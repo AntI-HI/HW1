@@ -5,6 +5,10 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+/**
+ * JPanel subclass responsible for rendering all game visuals.
+ * Handles drawing the background with scrolling effect and all active game objects.
+ */
 public class AnimationPane extends JPanel
 {
     private GameManager game_manager;

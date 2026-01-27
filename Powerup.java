@@ -2,6 +2,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Random;
 
+/**
+ * Represents a score multiplier powerup in the game.
+ * Extends GameObject and contains a score multiplier that can be enhanced with decorators.
+ * Randomly generates X2 or X5 powerup multipliers.
+ */
 public class Powerup extends GameObject
 {
     public ScorePowerup score_powerup = null;

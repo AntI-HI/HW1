@@ -1,5 +1,9 @@
 import java.io.IOException;
 
+/**
+ * Factory class responsible for creating all game objects.
+ * Populates the object pools with pre-created instances for efficient object reuse.
+ */
 public class ObjectFactory 
 {
     private GameManager game_manager;

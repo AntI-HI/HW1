@@ -1,3 +1,8 @@
+/**
+ * Manages collision detection and physics interactions between game objects.
+ * Detects collisions between the player and other objects, and triggers appropriate handlers.
+ * Implements the singleton pattern to ensure a single physics manager.
+ */
 public class PhysicsManager
 {
     private static PhysicsManager instance = null;

@@ -1,5 +1,10 @@
 import java.awt.Image;
 
+/**
+ * Singleton class that serves as a central repository for game assets and shared data.
+ * Stores all sprite images and global game state like player speed and jump strategies.
+ * Ensures all game systems access the same shared resources.
+ */
 public class DataPool
 {
     private Image player_sprite;

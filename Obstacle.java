@@ -1,6 +1,10 @@
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+/**
+ * Represents an obstacle in the game that the player must avoid.
+ * Extends GameObject and provides factory method for creating obstacle instances.
+ */
 public class Obstacle extends GameObject
 {
     public Obstacle(int _xPos, int _yPos, int _width, int _height)

@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 
+/**
+ * Central manager class that coordinates all game systems and state.
+ * Manages game objects, physics, events, score, UI, and rendering.
+ * Implements the singleton pattern to ensure a single instance throughout the game.
+ */
 public class GameManager
 {
 	private LinkedList<GameObject> deactiveObjects = new LinkedList<GameObject>();
@@ -51,17 +56,31 @@ public class GameManager
 
 	private static GameManager instance = null;
 
+	/**
+	 * Gets the singleton instance of GameManager.
+	 * 
+	 * @return The GameManager instance
+	 */
 	public static GameManager getInstance()
 	{
 		return instance;
 	}
 
+	/**
+	 * Constructor that initializes the DataPool singleton.
+	 * 
+	 * @throws IOException if there is an error loading game assets
+	 */
     public GameManager() throws IOException
 	{
 		DataPool.CreateDataPool();
 		instance = this;
 	}
 	
+	/**
+	 * Early initialization method that sets up all game managers, managers, and asset pools.
+	 * Loads sprites, creates object pools, and starts the object selector thread.
+	 */
 	private void Game_Manager_Early_Init()
 	{
 		try {
@@ -97,6 +116,11 @@ public class GameManager
 		}
 	}
 
+	/**
+	 * Creates an image filter to make a specific color transparent for powerup sprites.
+	 * 
+	 * @return An ImageFilter that filters out the target color
+	 */
 	private ImageFilter filterTransparentForPowerup()
 	{
 		ImageFilter filter = new RGBImageFilter()
@@ -120,6 +144,15 @@ public class GameManager
 		return filter;
 	}
 
+	/**
+	 * Loads and configures the powerup sprite image with optional transparency filtering.
+	 * 
+	 * @param sprite Path to the sprite image file
+	 * @param width Desired width of the sprite
+	 * @param height Desired height of the sprite
+	 * @param requires_filter Whether to apply transparency filtering
+	 * @throws IOException if the sprite file cannot be read
+	 */
 	private void addPowerupSprite(String sprite,
 								int width,
 								int height,
@@ -137,6 +170,13 @@ public class GameManager
 		DataPool.getInstance().setPowerupSprite(img);
 	}
 
+	/**
+	 * Loads and configures the background image.
+	 * 
+	 * @param backgroundImg Path to the background image file
+	 * @param background_width Desired width of the background
+	 * @param background_height Desired height of the background
+	 */
 	private void addBackgroundSprite(String backgroundImg, int background_width, int background_height)
 	{
 		Image tmp;
@@ -164,6 +204,15 @@ public class GameManager
 		graphics.dispose();
 	}
 
+	/**
+	 * Loads and configures the player sprite image with optional transparency filtering.
+	 * 
+	 * @param sprite Path to the sprite image file
+	 * @param width Desired width of the sprite
+	 * @param height Desired height of the sprite
+	 * @param requires_filter Whether to apply transparency filtering
+	 * @throws IOException if the sprite file cannot be read
+	 */
 	public void addPlayerSprite(String sprite,
 								int width,
 								int height,
@@ -182,6 +231,11 @@ public class GameManager
 		DataPool.getInstance().setPlayerSprite(img);
 	}
 
+	/**
+	 * Creates an image filter to make a specific color transparent for player sprites.
+	 * 
+	 * @return An ImageFilter that filters out the target color
+	 */
 	private ImageFilter filterTransparentForPlayer()
 	{
 		ImageFilter filter = new RGBImageFilter()
@@ -202,6 +256,15 @@ public class GameManager
 		return filter;
 	}
 
+	/**
+	 * Loads and configures the obstacle sprite image with optional transparency filtering.
+	 * 
+	 * @param sprite Path to the sprite image file
+	 * @param width Desired width of the sprite
+	 * @param height Desired height of the sprite
+	 * @param requires_filter Whether to apply transparency filtering
+	 * @throws IOException if the sprite file cannot be read
+	 */
 	public void addObstacleSprite(String sprite,
 								int width,
 								int height,
@@ -220,6 +283,11 @@ public class GameManager
 		DataPool.getInstance().setObstacleSprite(img);
 	}
 
+	/**
+	 * Creates an image filter to make specific colors transparent for obstacle sprites.
+	 * 
+	 * @return An ImageFilter that filters out target colors
+	 */
 	private ImageFilter filterTransparentForObstacle()
 	{
 		ImageFilter filter = new RGBImageFilter() 
@@ -247,6 +315,15 @@ public class GameManager
 		return filter;
 	}
 
+	/**
+	 * Loads and configures the high jump sprite image with optional transparency filtering.
+	 * 
+	 * @param sprite Path to the sprite image file
+	 * @param width Desired width of the sprite
+	 * @param height Desired height of the sprite
+	 * @param requires_filter Whether to apply transparency filtering
+	 * @throws IOException if the sprite file cannot be read
+	 */
 	public void addHighJumpSprite(String sprite,
 								int width,
 								int height,
@@ -265,6 +342,11 @@ public class GameManager
 		DataPool.getInstance().setHighJumpSprite(img);
 	}
 
+	/**
+	 * Creates an image filter to make specific colors transparent for high jump sprites.
+	 * 
+	 * @return An ImageFilter that filters out black colors
+	 */
 	private ImageFilter filterTransparentForHighJump()
 	{
 		ImageFilter filter = new RGBImageFilter() 
@@ -287,6 +369,15 @@ public class GameManager
 		return filter;
 	}
 
+	/**
+	 * Loads and configures the low jump sprite image with optional transparency filtering.
+	 * 
+	 * @param sprite Path to the sprite image file
+	 * @param width Desired width of the sprite
+	 * @param height Desired height of the sprite
+	 * @param requires_filter Whether to apply transparency filtering
+	 * @throws IOException if the sprite file cannot be read
+	 */
 	public void addLowJumpSprite(String sprite,
 								int width,
 								int height,
@@ -305,6 +396,11 @@ public class GameManager
 		DataPool.getInstance().setLowJumpSprite(img);
 	}
 
+	/**
+	 * Creates an image filter to make specific colors transparent for low jump sprites.
+	 * 
+	 * @return An ImageFilter that filters out black colors
+	 */
 	private ImageFilter filterTransparentForLowJump()
 	{
 		ImageFilter filter = new RGBImageFilter() 
@@ -327,11 +423,18 @@ public class GameManager
 		return filter;
 	}
 
+	/**
+	 * Starts the game manager initialization and object pool setup.
+	 */
 	public void Start()
 	{
 		Game_Manager_Early_Init();
 	}
 
+	/**
+	 * Updates all active game objects and performs post-update operations.
+	 * Skips update if player is dead or game is paused.
+	 */
 	public void Update()
     {
 		if (player.getPlayerHealth() > 0 && !paused)
@@ -344,92 +447,178 @@ public class GameManager
 		}
 	}
 	
+	/**
+	 * Performs post-update operations including background scrolling and collision detection.
+	 */
 	private void Post_Update()
 	{
 		background.Update();
 		physicsManager.CollisionCheck();
 	}
 
+	/**
+	 * Renders the current game state through the animation pane.
+	 */
 	public void draw()
     {
 		animationPane.paint();
 	}
 
+	/**
+	 * Gets the game background object.
+	 * 
+	 * @return The Background instance
+	 */
 	public Background getBackground()
 	{
 		return background;
 	}
 
+	/**
+	 * Gets the player object.
+	 * 
+	 * @return The Player instance
+	 */
 	public Player getPlayer()
 	{
 		return player;
 	}
 
+	/**
+	 * Gets the UI elements handler.
+	 * 
+	 * @return The UI_Elements instance
+	 */
 	public UI_Elements getUi_Elements()
 	{
 		return ui;
 	}
 
+	/**
+	 * Gets the animation pane (game rendering panel).
+	 * 
+	 * @return The AnimationPane instance
+	 */
 	public AnimationPane getAnimationPane()
 	{
 		return animationPane;
 	}
 
+	/**
+	 * Sets the animation pane reference.
+	 * 
+	 * @param _animationPane The AnimationPane to set
+	 */
 	public void setAnimationPane(AnimationPane _animationPane)
 	{
 		this.animationPane = _animationPane;
 	}
 	
+	/**
+	 * Sets the player object.
+	 * 
+	 * @param gameObject The GameObject to cast to Player
+	 */
 	public void setPlayer(GameObject gameObject)
 	{
 		this.player = (Player)gameObject;
 	}
 
+	/**
+	 * Toggles the paused state of the game.
+	 */
 	public void pause_game()
 	{
 		paused = !paused;
 	}
 
+	/**
+	 * Adds a game object to the active objects list.
+	 * 
+	 * @param object The GameObject to activate
+	 */
 	public void addActiveObject(GameObject object)
 	{
 		activeObjects.add(object);
 	}
 
+	/**
+	 * Removes a game object from the active objects list.
+	 * 
+	 * @param object The GameObject to deactivate
+	 */
 	public void removeActiveObject(GameObject object)
 	{
 		activeObjects.remove(object);
 	}
 
+	/**
+	 * Adds a game object to the inactive objects pool.
+	 * 
+	 * @param object The GameObject to deactivate
+	 */
 	public void addDeactiveObject(GameObject object)
 	{
 		deactiveObjects.add(object);
 	}
 
+	/**
+	 * Removes a game object from the inactive objects pool.
+	 * 
+	 * @param object The GameObject to remove
+	 */
 	public void removeDeactiveObject(GameObject object)
 	{
 		deactiveObjects.remove(object);
 	}
 
+	/**
+	 * Gets the number of inactive game objects.
+	 * 
+	 * @return The count of inactive objects
+	 */
 	public int getNumberOfGameDeactiveObjects()
 	{
 		return deactiveObjects.size();
 	}
 
+	/**
+	 * Gets the number of active game objects.
+	 * 
+	 * @return The count of active objects
+	 */
 	public int getNumberOfGameActiveObjects()
 	{
 		return activeObjects.size();
 	}
 
+	/**
+	 * Gets an inactive object at the specified index.
+	 * 
+	 * @param i The index in the inactive objects list
+	 * @return The GameObject at the specified index
+	 */
 	public GameObject getDeactiveObject(int i)
 	{
 		return deactiveObjects.get(i);
 	}
 
+	/**
+	 * Gets an active object at the specified index.
+	 * 
+	 * @param i The index in the active objects list
+	 * @return The GameObject at the specified index
+	 */
 	public GameObject getActiveObject(int i)
 	{
 		return activeObjects.get(i);
 	}
 
+	/**
+	 * Gets the list of all active game objects.
+	 * 
+	 * @return LinkedList of active GameObjects
+	 */
 	public LinkedList<GameObject> getActiveGameObjects()
 	{
 		return activeObjects;

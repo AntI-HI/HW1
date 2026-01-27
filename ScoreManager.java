@@ -1,3 +1,8 @@
+/**
+ * Manages the game score and score multiplier powerups.
+ * Tracks player score, applies powerup multipliers, and handles score updates.
+ * Implements the singleton pattern to ensure a single score manager.
+ */
 public class ScoreManager
 {
     public static ScoreManager instance;

@@ -1,3 +1,8 @@
+/**
+ * Manages game events triggered by collisions and game state changes.
+ * Handles event dispatching for object activation and game state transitions.
+ * Implements the singleton pattern to ensure a single event manager.
+ */
 public class GameEventManager
 {
     public static GameEventManager instance;
