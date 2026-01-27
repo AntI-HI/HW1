@@ -1,0 +1,34 @@
+package com.runner.model;
+
+import java.awt.Graphics2D;
+import java.awt.Image;
+import com.runner.utils.DataPool;
+
+/**
+ * Represents an obstacle in the game that the player must avoid.
+ * Extends GameObject and provides factory method for creating obstacle
+ * instances.
+ */
+public class Obstacle extends GameObject {
+    public Obstacle(int _xPos, int _yPos, int _width, int _height) {
+        super(_xPos, _yPos, _width, _height);
+
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawImage(dataPool.getObstacleSprite(), 0, 0, null);
+        g2d.dispose();
+    }
+
+    public static GameObject Create(int pos_x, int pos_y) {
+        DataPool dataPool = DataPool.getInstance();
+        Image img = dataPool.getObstacleSprite();
+        GameObject obstacle;
+        int width;
+        int height;
+
+        width = img.getWidth(null);
+        height = img.getHeight(null);
+        obstacle = new Obstacle(pos_x, pos_y, width, height);
+
+        return obstacle;
+    }
+}
